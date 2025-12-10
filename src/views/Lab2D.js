@@ -100,17 +100,33 @@ const Lab2D = () => {
 
                 <${GlassCard} style=${{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                     <h3 style=${{ marginTop: 0, color: 'var(--color-secondary)' }}>Convergence Plot</h3>
-                    <div style=${{ flex: 1, position: 'relative', borderLeft: '1px solid var(--color-border)', borderBottom: '1px solid var(--color-border)' }}>
-                        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-                            <path 
-                                d=${`M 0 100 ${history.map(h => `L ${h.i * 2} ${100 - h.loss * 5}`).join(' ')}`} 
-                                fill="none" 
-                                stroke="var(--color-accent)" 
-                                strokeWidth="2"
-                                vectorEffect="non-scaling-stroke"
-                            />
-                        </svg>
-                    </div>
+                    <${GlassCard} style=${flex1Style}>
+                        <h3 style=${h3topStyle}>Loss Curve</h3>
+                        <div style=${svgContainerStyle}>
+                            <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                <path 
+                                    d=${`M 0 100 ${history.map(h => `L ${h.i * 2} ${100 - h.loss * 5}`).join(' ')}`} 
+                                    fill="none" 
+                                    stroke="var(--color-accent)" 
+                                    strokeWidth="2"
+                                    vectorEffect="non-scaling-stroke"
+                                />
+                            </svg>
+                        </div>
+                        <p style=${captionStyle}>
+                            This graph shows how quickly the error (Cost) decreases over time.
+                        </p>
+                    <//>
+
+                    <!-- ADDED: Theory Section -->
+                    <${GlassCard} style=${{ borderLeft: '4px solid var(--color-primary)' }}>
+                        <h4 style=${{ margin: '0 0 8px 0', color: 'var(--color-primary)', fontFamily: 'var(--font-serif)' }}>Concept: Contour Maps</h4>
+                        <p style=${{ fontSize: '0.85rem', color: 'var(--color-text-dim)', lineHeight: 1.5, margin: 0 }}>
+                            Contour lines represent points of <strong>equal height</strong> (loss).
+                            When the lines are close together, the slope is steep.
+                            The algorithm moves perpendicular to these lines, seeking the center (minimum).
+                        </p>
+                    <//>
                 <//>
             </div>
 
