@@ -1,4 +1,3 @@
-```javascript
 import { Router, Route, Switch } from 'wouter';
 import html from './htm.js';
 import Landing from './views/Landing.js';
@@ -6,8 +5,8 @@ import Playground from './views/Playground.js';
 import Lab2D from './views/Lab2D.js';
 
 const App = () => {
-  return html`
-    < ${ Router }>
+    return html`
+    <${Router}>
         <div style=${{
             width: '100%',
             height: '100vh',
@@ -16,19 +15,19 @@ const App = () => {
         }}>
             <!-- Academic Navigation Header -->
             <nav style=${{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                width: '100%',
-                zIndex: 100,
-                background: 'var(--color-surface)',
-                borderBottom: '1px solid var(--color-border)',
-                padding: '15px 40px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                boxSizing: 'border-box'
-            }}>
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            zIndex: 100,
+            background: 'var(--color-surface)',
+            borderBottom: '1px solid var(--color-border)',
+            padding: '15px 40px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            boxSizing: 'border-box'
+        }}>
                 <div style=${{ fontFamily: 'var(--font-serif)', fontWeight: 600, fontSize: '1.2rem' }}>
                     Gradient Descent Explorer
                 </div>
@@ -49,8 +48,7 @@ const App = () => {
             </div>
         </div>
     <//>
-    `;
+  `;
 };
 
 export default App;
-```
