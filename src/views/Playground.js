@@ -95,49 +95,73 @@ const Playground = () => {
         setIsAnimating(false);
     };
 
-    return html`
-        <div style=${{ width: '100%', height: '100%', position: 'relative', display: 'flex' }}>
+    // --- STYLES ---
+    const containerStyle = { width: '100%', height: '100%', position: 'relative', display: 'flex' };
+    const sidebarStyle = {
+        width: '320px',
+        background: '#fff',
+        borderRight: '1px solid var(--color-border)',
+        padding: '20px',
+        zIndex: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '20px'
+    };
+    const headerStyle = { fontFamily: 'var(--font-serif)', marginTop: 0 };
+    const subHeaderStyle = { fontSize: '0.85rem', color: 'var(--color-text-dim)' };
+    const sliderContainerStyle = { padding: '20px', background: '#f8fafc', borderRadius: '8px', border: '1px solid var(--color-border)' };
+    const buttonGroupStyle = { display: 'flex', gap: 10 };
+    const playBtnStyle = { flex: 1, justifyContent: 'center' };
+    const statsBoxStyle = { marginTop: 'auto', padding: '15px', background: '#f1f5f9', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '0.8rem' };
+    const statItemStyle = { display: 'flex', justifyContent: 'space-between', marginBottom: 5 };
+    const statItemLastStyle = { display: 'flex', justifyContent: 'space-between' };
 
+    const canvasContainerStyle = { flex: 1, position: 'relative', background: '#fff' };
+    const cameraSettings = { position: [20, 15, 20], fov: 35 };
+    const gridHelperArgs = [40, 40, '#e2e8f0', '#f1f5f9'];
+    const gridHelperPos = [0, -5, 0];
+    const axesArgs = [5];
+
+    const legendStyle = { position: 'absolute', bottom: 20, right: 20, background: 'rgba(255,255,255,0.9)', padding: '10px', borderRadius: '4px', border: '1px solid #e2e8f0', fontSize: '0.8rem' };
+    const legendItemMbStyle = { display: 'flex', alignItems: 'center', gap: 5, marginBottom: 5 };
+    const legendItemStyle = { display: 'flex', alignItems: 'center', gap: 5 };
+    const redDotStyle = { width: 10, height: 10, background: '#dc2626', borderRadius: '50%' };
+    const blueLineStyle = { width: 20, height: 2, background: '#2563eb' };
+
+    return html`
+        <div style=${containerStyle}>
+            
             <!-- Sidebar Controls -->
-            <div style=${{
-            width: '320px',
-            background: '#fff',
-            borderRight: '1px solid var(--color-border)',
-            padding: '20px',
-            zIndex: 10,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '20px'
-        }}>
+            <div style=${sidebarStyle}>
                 <div>
-                    <h3 style=${{ fontFamily: 'var(--font-serif)', marginTop: 0 }}>Simulation Parameters</h3>
-                    <p style=${{ fontSize: '0.85rem', color: 'var(--color-text-dim)' }}>
-                        Adjust the hyperparameters to observe convergence behavior.
-                    </p>
+                     <h3 style=${headerStyle}>Simulation Parameters</h3>
+                     <p style=${subHeaderStyle}>
+                         Adjust the hyperparameters to observe convergence behavior.
+                     </p>
                 </div>
 
-                <div style=${{ padding: '20px', background: '#f8fafc', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                    <${Slider}
-                        label="Learning Rate (α)"
-                        value=${lr}
-                        min=${0.01}
-                        max=${1.5}
-                        step=${0.01}
-                        onChange=${setLr}
+                <div style=${sliderContainerStyle}>
+                    <${Slider} 
+                        label="Learning Rate (α)" 
+                        value=${lr} 
+                        min=${0.01} 
+                        max=${1.5} 
+                        step=${0.01} 
+                        onChange=${setLr} 
                         formatValue=${v => v.toFixed(2)}
                     />
                 </div>
 
-                <div style=${{ display: 'flex', gap: 10 }}>
-                    <${Button}
+                <div style=${buttonGroupStyle}>
+                    <${Button} 
                         onClick=${() => setIsAnimating(!isAnimating)}
                         variant=${isAnimating ? 'secondary' : 'primary'}
                         icon=${isAnimating ? Pause : Play}
-                        style=${{ flex: 1, justifyContent: 'center' }}
+                        style=${playBtnStyle}
                     >
                         ${isAnimating ? 'Pause' : 'Start'}
                     <//>
-                    <${Button}
+                    <${Button} 
                         onClick=${reset}
                         variant="secondary"
                         icon=${RotateCcw}
@@ -145,12 +169,12 @@ const Playground = () => {
                 </div>
 
                 <!-- Math Stats Box -->
-                <div style=${{ marginTop: 'auto', padding: '15px', background: '#f1f5f9', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '0.8rem' }}>
-                    <div style=${{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+                <div style=${statsBoxStyle}>
+                    <div style=${statItemStyle}>
                         <span>Loss (J):</span>
                         <strong>${points[points.length - 1].y.toFixed(6)}</strong>
                     </div>
-                    <div style=${{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div style=${statItemLastStyle}>
                         <span>Steps:</span>
                         <strong>${points.length - 1}</strong>
                     </div>
@@ -158,25 +182,25 @@ const Playground = () => {
             </div>
 
             <!-- Main Canvas -->
-            <div style=${{ flex: 1, position: 'relative', background: '#fff' }}>
-                <${Canvas} camera=${{ position: [20, 15, 20], fov: 35 }}>
+            <div style=${canvasContainerStyle}>
+                <${Canvas} camera=${cameraSettings}>
                     <ambientLight intensity=${0.8} />
                     <directionalLight position=${[10, 20, 10]} intensity=${1.5} castShadow />
                     <${Surface} />
                     <${Marker} position=${points[points.length - 1]} />
                     <${Path} points=${points} />
                     <${OrbitControls} makeDefault />
-                    <gridHelper args=${[40, 40, '#e2e8f0', '#f1f5f9']} position=${[0, -5, 0]} />
-                    <axesHelper args=${[5]} />
+                    <gridHelper args=${gridHelperArgs} position=${gridHelperPos} />
+                    <axesHelper args=${axesArgs} />
                 <//>
-
+                
                 <!-- Legend overlay -->
-                <div style=${{ position: 'absolute', bottom: 20, right: 20, background: 'rgba(255,255,255,0.9)', padding: '10px', borderRadius: '4px', border: '1px solid #e2e8f0', fontSize: '0.8rem' }}>
-                    <div style=${{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 5 }}>
-                        <div style=${{ width: 10, height: 10, background: '#dc2626', borderRadius: '50%' }}></div> Current Position
+                <div style=${legendStyle}>
+                    <div style=${legendItemMbStyle}>
+                        <div style=${redDotStyle}></div> Current Position
                     </div>
-                    <div style=${{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                        <div style=${{ width: 20, height: 2, background: '#2563eb' }}></div> Descent Path
+                    <div style=${legendItemStyle}>
+                        <div style=${blueLineStyle}></div> Descent Path
                     </div>
                 </div>
             </div>

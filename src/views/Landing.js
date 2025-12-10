@@ -30,69 +30,100 @@ const WireframeSphere = () => {
 const Landing = () => {
     const [, setLocation] = useLocation();
 
+    // --- STYLES ---
+    const containerStyle = { position: 'relative', width: '100%', height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column' };
+    const bgSceneStyle = { position: 'absolute', top: 0, right: '-20%', width: '60%', height: '100%', zIndex: 0, opacity: 0.6 };
+    const cameraSettings = { position: [0, 0, 5] };
+
+    const contentStyle = {
+        position: 'relative',
+        zIndex: 10,
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        padding: '0 10%',
+        maxWidth: '800px'
+    };
+
+    const motionInitial = { opacity: 0, x: -30 };
+    const motionAnimate = { opacity: 1, x: 0 };
+    const motionTransition = { duration: 0.8 };
+
+    const subtitleStyle = {
+        textTransform: 'uppercase',
+        fontSize: '0.85rem',
+        letterSpacing: '0.1em',
+        color: 'var(--color-text-dim)',
+        marginBottom: '1rem',
+        fontWeight: 600
+    };
+
+    const titleStyle = {
+        fontFamily: 'var(--font-serif)',
+        fontSize: '3.5rem',
+        margin: '0 0 20px 0',
+        color: 'var(--color-primary)', // Green
+        lineHeight: 1.1
+    };
+
+    const italicStyle = { fontStyle: 'italic', fontWeight: 400 };
+
+    const descStyle = {
+        fontSize: '1.15rem',
+        color: 'var(--color-text-dim)',
+        maxWidth: '500px',
+        margin: '0 0 40px 0',
+        lineHeight: 1.6
+    };
+
+    const btnStyle = { fontSize: '1rem', padding: '14px 28px' };
+
+    const footerStyle = {
+        position: 'absolute',
+        bottom: 40,
+        left: '10%',
+        color: 'var(--color-text-dim)',
+        fontSize: '0.9rem',
+        display: 'flex',
+        gap: 40
+    };
+
     return html`
-        <div style=${{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+        <div style=${containerStyle}>
             
             <!-- Background 3D Scene (Subtle) -->
-            <div style=${{ position: 'absolute', top: 0, right: '-20%', width: '60%', height: '100%', zIndex: 0, opacity: 0.6 }}>
-                <${Canvas} camera=${{ position: [0, 0, 5] }}>
+            <div style=${bgSceneStyle}>
+                <${Canvas} camera=${cameraSettings}>
                     <${WireframeSphere} />
                     <${OrbitControls} enableZoom=${false} autoRotate autoRotateSpeed=${0.5} />
                 <//>
             </div>
 
             <!-- Content Left Aligned -->
-            <div style=${{
-            position: 'relative',
-            zIndex: 10,
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            padding: '0 10%',
-            maxWidth: '800px'
-        }}>
+            <div style=${contentStyle}>
                 <${motion.div}
-                    initial=${{ opacity: 0, x: -30 }}
-                    animate=${{ opacity: 1, x: 0 }}
-                    transition=${{ duration: 0.8 }}
+                    initial=${motionInitial}
+                    animate=${motionAnimate}
+                    transition=${motionTransition}
                 >
-                    <div style=${{
-            textTransform: 'uppercase',
-            fontSize: '0.85rem',
-            letterSpacing: '0.1em',
-            color: 'var(--color-text-dim)',
-            marginBottom: '1rem',
-            fontWeight: 600
-        }}>
+                    <div style=${subtitleStyle}>
                         Mercyhurst University
                     </div>
 
-                    <h1 style=${{
-            fontFamily: 'var(--font-serif)',
-            fontSize: '3.5rem',
-            margin: '0 0 20px 0',
-            color: 'var(--color-primary)', // Green
-            lineHeight: 1.1
-        }}>
+                    <h1 style=${titleStyle}>
                         Gradient Descent <br/>
-                        <span style=${{ fontStyle: 'italic', fontWeight: 400 }}>Optimization</span>
+                        <span style=${italicStyle}>Optimization</span>
                     </h1>
                     
-                    <p style=${{
-            fontSize: '1.15rem',
-            color: 'var(--color-text-dim)',
-            maxWidth: '500px',
-            margin: '0 0 40px 0',
-            lineHeight: 1.6
-        }}>
+                    <p style=${descStyle}>
                         An interactive exploration of the fundamental algorithm behind machine learning. 
                         Visualize loss landscapes and hyperparameters in a controlled 3D environment.
                     </p>
 
                     <${Button} 
                         onClick=${() => setLocation('/playground')}
-                        style=${{ fontSize: '1rem', padding: '14px 28px' }}
+                        style=${btnStyle}
                         icon=${ArrowRight}
                     >
                         Enter Simulation
@@ -101,15 +132,7 @@ const Landing = () => {
             </div>
 
              <!-- Footer Info -->
-             <div style=${{
-            position: 'absolute',
-            bottom: 40,
-            left: '10%',
-            color: 'var(--color-text-dim)',
-            fontSize: '0.9rem',
-            display: 'flex',
-            gap: 40
-        }}>
+             <div style=${footerStyle}>
                  <div>
                      <strong>v2.0.1+Mercyhurst</strong><br/>
                      Stable Build

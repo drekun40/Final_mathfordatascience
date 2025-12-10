@@ -47,19 +47,38 @@ const Lab2D = () => {
     // Calculate Loss History
     const history = points.map((p, i) => ({ i, loss: f(p.x, p.y) }));
 
+    // --- STYLES ---
+    const containerStyle = { padding: '20px', height: '100vh', boxSizing: 'border-box', overflowY: 'auto' };
+    const headerStyle = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 };
+    const titleStyle = { margin: 0, fontFamily: 'var(--font-display)', color: 'var(--color-primary)' };
+    const spacerStyle = { width: 100 };
+    const gridStyle = { display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '20px', height: 'calc(100% - 80px)' };
+    const controlsColStyle = { display: 'flex', flexDirection: 'column', gap: '20px' };
+    const h3topStyle = { marginTop: 0 };
+    const btnGroupStyle = { display: 'flex', gap: 10, marginTop: 20 };
+    const flex1Style = { flex: 1 };
+
+    const svgContainerStyle = { position: 'relative', width: '100%', height: '200px', borderLeft: '1px solid #475569', borderBottom: '1px solid #475569' };
+    const captionStyle = { color: 'var(--color-text-dim)', fontSize: '0.8rem', marginTop: 10 };
+
+    const contourCardStyle = { display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', overflow: 'hidden' };
+    const contourSvgStyle = { background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' };
+    const contourTitlePosStyle = { position: 'absolute', top: 20, right: 20, textAlign: 'right', pointerEvents: 'none' };
+    const contourTitleStyle = { margin: 0, color: 'var(--color-text-dim)', opacity: 0.5 };
+
     return html`
-        <div style=${{ padding: '20px', height: '100vh', boxSizing: 'border-box', overflowY: 'auto' }}>
-            <div style=${{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+        <div style=${containerStyle}>
+            <div style=${headerStyle}>
                 <${Button} onClick=${() => setLocation('/')} variant="secondary" icon=${ArrowLeft}>Back<//>
-                <h2 style=${{ margin: 0, fontFamily: 'var(--font-display)', color: 'var(--color-primary)' }}>2D Analysis Lab</h2>
-                <div style=${{ width: 100 }}></div> <!-- Spacer -->
+                <h2 style=${titleStyle}>2D Analysis Lab</h2>
+                <div style=${spacerStyle}></div> <!-- Spacer -->
             </div>
 
-            <div style=${{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '20px', height: 'calc(100% - 80px)' }}>
+            <div style=${gridStyle}>
                 <!-- Controls -->
-                <div style=${{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style=${controlsColStyle}>
                     <${GlassCard}>
-                        <h3 style=${{ marginTop: 0 }}>Descent Controls</h3>
+                        <h3 style=${h3topStyle}>Descent Controls</h3>
                         <${Slider} 
                             label="Learning Rate (α)" 
                             value=${lr} 
@@ -69,12 +88,12 @@ const Lab2D = () => {
                             onChange=${setLr} 
                             formatValue=${v => v.toFixed(2)}
                         />
-                        <div style=${{ display: 'flex', gap: 10, marginTop: 20 }}>
+                        <div style=${btnGroupStyle}>
                             <${Button} 
                                 onClick=${() => setIsAnimating(!isAnimating)}
                                 variant=${isAnimating ? 'secondary' : 'primary'}
                                 icon=${isAnimating ? Pause : Play}
-                                style=${{ flex: 1 }}
+                                style=${flex1Style}
                             >
                                 ${isAnimating ? 'Pause' : 'Start'}
                             <//>
@@ -86,9 +105,9 @@ const Lab2D = () => {
                         </div>
                     <//>
 
-                    <${GlassCard} style=${{ flex: 1 }}>
-                        <h3 style=${{ marginTop: 0 }}>Loss Curve</h3>
-                        <div style=${{ position: 'relative', width: '100%', height: '200px', borderLeft: '1px solid #475569', borderBottom: '1px solid #475569' }}>
+                    <${GlassCard} style=${flex1Style}>
+                        <h3 style=${h3topStyle}>Loss Curve</h3>
+                        <div style=${svgContainerStyle}>
                             <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
                                 <path 
                                     d=${`M 0 100 ${history.map(h => `L ${h.i * 2} ${100 - h.loss * 5}`).join(' ')}`} 
@@ -98,16 +117,16 @@ const Lab2D = () => {
                                 />
                             </svg>
                         </div>
-                        <p style=${{ color: 'var(--color-text-dim)', fontSize: '0.8rem', marginTop: 10 }}>
+                        <p style=${captionStyle}>
                             This graph shows how quickly the error (Cost) decreases over time.
                         </p>
                     <//>
                 </div>
 
                 <!-- Contour Map -->
-                <${GlassCard} style=${{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', overflow: 'hidden' }}>
+                <${GlassCard} style=${contourCardStyle}>
                     
-                    <svg width="600" height="600" viewBox="-10 -10 20 20" style=${{ background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                    <svg width="600" height="600" viewBox="-10 -10 20 20" style=${contourSvgStyle}>
                         
                         <!-- Contours (Circles for x^2 + y^2) -->
                         ${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(r => html`
@@ -140,8 +159,8 @@ const Lab2D = () => {
                         `)}
                     </svg>
                     
-                    <div style=${{ position: 'absolute', top: 20, right: 20, textAlign: 'right', pointerEvents: 'none' }}>
-                        <h2 style=${{ margin: 0, color: 'var(--color-text-dim)', opacity: 0.5 }}>Top-Down View</h2>
+                    <div style=${contourTitlePosStyle}>
+                        <h2 style=${contourTitleStyle}>Top-Down View</h2>
                     </div>
 
                 <//>
