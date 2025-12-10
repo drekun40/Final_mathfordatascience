@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Descent Explorer</title>
+
+    <!-- Error Handling: Displays errors on screen if JS crashes -->
+    <script>
+        window.onerror = function (msg, url, line, col, error) {
+            const errorBox = document.getElementById('error-box');
+            if (errorBox) {
+                errorBox.style.display = 'block';
+                errorBox.innerHTML += `<div><strong>Error:</strong> ${msg}<br><small>${url}:${line}</small></div>`;
+            }
+            // Also log to console
+            console.error(msg, url, line, col, error);
+            return false;
+        };
+    </script>
+
+    <!-- UI Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- React Dependencies (CDN) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel (Compiles JSX in browser) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* === DESIGN SYSTEM === */
+        :root {
+            --color-primary: #6366f1;
+            --color-primary-dark: #4f46e5;
+            --color-primary-light: #818cf8;
+            --color-secondary: #ec4899;
+            --color-accent: #06b6d4;
+            --color-background: #f8fafc;
+            --color-surface: rgba(255, 255, 255, 0.85);
+            --color-text-main: #0f172a;
+            --font-sans: 'Inter', sans-serif;
+            --font-display: 'Outfit', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-sans);
+            color: var(--color-text-main);
+            background: #f0f4f8;
+            /* Premium Mesh Gradient Background */
+            background-image:
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        #error-box {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #ffe4e6;
+            color: #991b1b;
+            padding: 1rem;
+            border-bottom: 2px solid #ef4444;
+            font-family: monospace;
+            z-index: 9999;
+        }
+
+        #loading-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: var(--color-primary);
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.5;
+            }
+        }
+
+        /* === COMPONENT STYLES === */
+        .card {
+            background: var(--color-surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 1.5rem;
+        }
+
+        .card:hover {
+            /* Slight lift on hover */
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            color: white;
+            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.25);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-text-main);
+            border: 1px solid #e2e8f0;
+        }
+
+        .input-range {
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .font-display {
+            font-family: var(--font-display);
+        }
+
+        .text-xl {
+            font-size: 1.25rem;
+        }
+
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+
+        .text-3xl {
+            font-size: 1.875rem;
+        }
+
+        .text-primary {
+            color: var(--color-primary);
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .gap-4 {
+            gap: 1rem;
+        }
+
+        .gap-6 {
+            gap: 1.5rem;
+        }
+
+        .grid {
+            display: grid;
+        }
+
+        @media (min-width: 768px) {
+            .grid-cols-2 {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .md\:flex {
+                display: flex;
+            }
+
+            .md\:hidden {
+                display: none;
+            }
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            color: #64748b;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .nav-button.active {
+            background: var(--color-primary);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Error Display (Hidden by default) -->
+    <div id="error-box"></div>
+
+    <!-- Main App Container -->
+    <div id="root">
+        <div id="loading-state">
+            Initializing Application...
+        </div>
+    </div>
+
+    <!-- MAIN APP SCRIPT -->
+    <script type="text/babel" data-presets="react">
+
+        // --- COMPONENTS ---
+
+        const Introduction = () => {
+            return (
+                <div className="animate-fade-in">
+                    <div className="card" style={{ borderLeft: "4px solid #3b82f6", background: "#eff6ff" }}>
+                        <h3 className="text-2xl font-bold mb-4" style={{ color: "#1e3a8a" }}>What is Gradient Descent?</h3>
+                        <p style={{ lineHeight: 1.6 }}>
+                            Gradient descent is an iterative optimization algorithm used to find the minimum of a function.
+                            Think of it as walking down a misty mountain: you check the slope at your feet and take a step in the steepest downward direction.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-6">
+                        <div className="card">
+                            <h4 className="text-xl font-bold mb-4 text-primary">The Algorithm</h4>
+                            <ol style={{ paddingLeft: "1.2rem", lineHeight: "2" }}>
+                                <li>Start at a random point <code>x₀</code></li>
+                                <li>Calculate gradient <code>∇f(x)</code> (slope)</li>
+                                <li>Update: <code>x = x - α · ∇f(x)</code></li>
+                                <li>Repeat until stopped</li>
+                            </ol>
+                        </div>
+                        <div className="card">
+                            <h4 className="text-xl font-bold mb-4 text-secondary">Key Terms</h4>
+                            <ul style={{ listStyle: "none", padding: 0 }}>
+                                <li className="mb-4">
+                                    <strong>Learning Rate (α):</strong> Size of the steps.
+                                </li>
+                                <li>
+                                    <strong>Cost Function (J):</strong> How "wrong" or "high" we are.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Viz2D = () => {
+            const [points, setPoints] = React.useState([{ x: -8, y: 64 }]);
+            const [isAnimating, setIsAnimating] = React.useState(false);
+            const [lr, setLr] = React.useState(0.1);
+
+            // Function & Derivative: y = x^2, y' = 2x
+            const f = x => x * x;
+            const df = x => 2 * x;
+
+            const step = () => {
+                setPoints(prev => {
+                    const last = prev[prev.length - 1];
+                    const grad = df(last.x);
+                    const newX = last.x - lr * grad;
+                    return [...prev, { x: newX, y: f(newX) }];
+                });
+            };
+
+            React.useEffect(() => {
+                let interval;
+                if (isAnimating && points.length < 50) {
+                    interval = setInterval(step, 100);
+                } else {
+                    setIsAnimating(false);
+                }
+                return () => clearInterval(interval);
+            }, [isAnimating, points, lr]);
+
+            const reset = () => {
+                setPoints([{ x: -8, y: 64 }]);
+                setIsAnimating(false);
+            };
+
+            return (
+                <div className="card">
+                    <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-2xl font-bold font-display">2D Optimization</h3>
+                        <div className="text-xl font-mono text-primary">Cost: {points[points.length - 1].y.toFixed(4)}</div>
+                    </div>
+
+                    <div className="flex gap-4 mb-6 items-center flex-wrap">
+                        <button onClick={() => setIsAnimating(!isAnimating)} className="btn btn-primary">
+                            {isAnimating ? "Pause" : "Start Descent"}
+                        </button>
+                        <button onClick={reset} className="btn btn-secondary">Reset</button>
+
+                        <div className="flex items-center gap-2 ml-auto">
+                            <label>Learning Rate:</label>
+                            <input
+                                type="range" min="0.01" max="0.5" step="0.01"
+                                value={lr} onChange={e => setLr(Number(e.target.value))}
+                            />
+                            <span className="font-mono">{lr.toFixed(2)}</span>
+                        </div>
+                    </div>
+
+                    <div style={{ height: "300px", border: "1px solid #e2e8f0", borderRadius: "8px", position: "relative" }}>
+                        <svg width="100%" height="100%" viewBox="0 0 400 300" preserveAspectRatio="none">
+                            {/* Curve */}
+                            <path
+                                d={`M 0 0 ${Array.from({ length: 100 }).map((_, i) => {
+                                    const x = -10 + (i / 100) * 20;
+                                    const y = f(x);
+                                    // Map to SVG coords: x(-10 to 10) -> 0 to 400, y(0 to 100) -> 300 to 0
+                                    const sx = (x + 10) * 20;
+                                    const sy = 300 - (y * 3);
+                                    return `L ${sx} ${sy}`;
+                                }).join(" ")}`}
+                                fill="none" stroke="#818cf8" strokeWidth="3"
+                            />
+                            {/* Points */}
+                            {points.map((p, i) => {
+                                const sx = (p.x + 10) * 20;
+                                const sy = 300 - (p.y * 3);
+                                return (
+                                    <circle key={i} cx={sx} cy={sy} r={i === points.length - 1 ? 6 : 3}
+                                        fill={i === points.length - 1 ? "#ec4899" : "#6366f1"} />
+                                );
+                            })}
+                        </svg>
+                    </div>
+                </div>
+            );
+        };
+
+        const Quiz = () => {
+            const [answers, setAnswers] = React.useState({});
+            const [showResult, setShowResult] = React.useState(false);
+
+            const questions = [
+                { q: "What is the Gradient?", opts: ["Slope", "Height", "Random"], a: 0 },
+                { q: "If Learning Rate is too high?", opts: ["Converges fast", "Overshoots", "Stops"], a: 1 },
+                { q: "Where does it stop?", opts: ["Top", "Middle", "Minimum"], a: 2 },
+            ];
+
+            const score = Object.keys(answers).filter(k => answers[k] === questions[k].a).length;
+
+            return (
+                <div className="card">
+                    <h3 className="text-2xl font-bold mb-6">Quiz</h3>
+                    {questions.map((q, idx) => (
+                        <div key={idx} className="mb-6">
+                            <p className="font-bold mb-2">{idx + 1}. {q.q}</p>
+                            <div className="flex gap-2">
+                                {q.opts.map((opt, oIdx) => (
+                                    <button
+                                        key={oIdx}
+                                        onClick={() => !showResult && setAnswers({ ...answers, [idx]: oIdx })}
+                                        className={`btn ${answers[idx] === oIdx ? 'btn-primary' : 'btn-secondary'}`}
+                                        style={{ opacity: showResult && oIdx !== q.a ? 0.5 : 1 }}
+                                    >
+                                        {opt}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+
+                    {!showResult ? (
+                        <button onClick={() => setShowResult(true)} className="btn btn-primary w-full">Check Answers</button>
+                    ) : (
+                        <div className="p-4 bg-gray-100 rounded text-center">
+                            <h4 className="text-2xl font-bold text-primary">Score: {score}/{questions.length}</h4>
+                            <button onClick={() => { setShowResult(false); setAnswers({}); }} className="btn btn-secondary mt-2">Retry</button>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [section, setSection] = React.useState('intro');
+
+            // Render navigation buttons
+            const Nav = () => (
+                <div className="flex gap-2 p-1 bg-white rounded-lg border border-gray-200 mb-8" style={{ display: 'inline-flex' }}>
+                    {[
+                        { id: 'intro', label: 'Intro' },
+                        { id: 'viz', label: '2D Viz' },
+                        { id: 'quiz', label: 'Quiz' }
+                    ].map(item => (
+                        <button
+                            key={item.id}
+                            onClick={() => setSection(item.id)}
+                            className={`nav-button ${section === item.id ? 'active' : ''}`}
+                        >
+                            {item.label}
+                        </button>
+                    ))}
+                </div>
+            );
+
+            return (
+                <div className="max-w-4xl mx-auto p-4 md:p-8">
+                    <header className="mb-8 text-center">
+                        <h1 className="text-3xl font-display font-bold text-gray-900">
+                            Gradient <span className="text-primary">Descent</span>
+                        </h1>
+                        <p className="text-gray-500">Interactive Learning Module</p>
+                    </header>
+
+                    <div className="flex justify-center">
+                        <Nav />
+                    </div>
+
+                    <main>
+                        {section === 'intro' && <Introduction />}
+                        {section === 'viz' && <Viz2D />}
+                        {section === 'quiz' && <Quiz />}
+                    </main>
+
+                    <footer className="text-center mt-12 text-gray-400 text-sm">
+                        Built with React & Vanilla CSS
+                    </footer>
+                </div>
+            );
+        };
+
+        // --- MOUNT ---
+        try {
+            const root = ReactDOM.createRoot(document.getElementById('root'));
+            root.render(<App />);
+            // Initialize icons safety check
+            if (window.lucide) window.lucide.createIcons();
+        } catch (err) {
+            console.error("Mount Error:", err);
+            document.getElementById('root').innerHTML = "<div style='color:red; text-align:center'>App Failed to Load. See Console.</div>";
+        }
+    </script>
+</body>
+
+</html>
