@@ -1,15 +1,15 @@
 import { Router, Route, Switch } from 'wouter';
 import html from './htm.js';
 
-// --- Re-integrating Components with Cache Busting v=3.2 ---
-import Landing from './views/Landing.js?v=3.2';
-import Playground from './views/Playground.js?v=3.2';
-import Lab2D from './views/Lab2D.js?v=3.2';
+// --- Re-integrating Components with Cache Busting v=3.3 ---
+import Landing from './views/Landing.js?v=3.3';
+import Playground from './views/Playground.js?v=3.3';
+import Lab2D from './views/Lab2D.js?v=3.3';
 
 // --- APP SHELL: THE COMPUTATIONAL OBSERVATORY ---
 const Reset = () => {
 
-    // --- MERCYHURST ACADEMIC PALETTE ---
+    // --- MERCYHURST ACADEMIC PALETTE (Source of Truth) ---
     const theme = {
         primary: '#0B3A2E',   // Heritage Deep Green
         secondary: '#003057', // Mercyhurst Navy
@@ -22,29 +22,8 @@ const Reset = () => {
     };
 
     // --- GLOBAL STYLES ---
-    const containerStyle = {
-        width: '100%',
-        height: '100vh',
-        background: theme.bg,
-        color: theme.text,
-        fontFamily: "'Inter', system-ui, sans-serif",
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden' // Dashboard feel
-    };
-
-    // "Observatory" Header: Dark, Professional, Scientific
-    const navStyle = {
-        height: '64px',
-        background: theme.primary,
-        borderBottom: `1px solid ${theme.secondary}`,
-        padding: '0 24px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        zIndex: 50
-    };
+    // containerStyle is now inlined with CSS variables
+    // navStyle is now inlined with CSS variables
 
     const brandStyle = {
         display: 'flex',
@@ -110,10 +89,45 @@ const Reset = () => {
     // --- RENDER ---
     return html`
     <${Router}>
-        <div style=${containerStyle}>
+        <!-- Global CSS Variables Injection -->
+        <style>
+            :root {
+                --color-primary: ${theme.primary};
+                --color-secondary: ${theme.secondary};
+                --color-accent: ${theme.accent};
+                --color-bg: ${theme.bg};
+                --color-surface: ${theme.surface};
+                --color-text: ${theme.text};
+                --color-text-dim: ${theme.textDim};
+                --color-border: ${theme.border};
+                --font-serif: 'Lora', serif;
+                --font-sans: 'Inter', system-ui, sans-serif;
+            }
+            body { margin: 0; font-family: var(--font-sans); background: var(--color-bg); color: var(--color-text); }
+            * { box-sizing: border-box; }
+        </style>
+
+        <div style=${{
+            width: '100%',
+            height: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden'
+        }}>
             
             <!-- Observatory Header -->
-            <nav style=${navStyle}>
+            <nav style=${{
+            height: '64px',
+            background: 'var(--color-primary)',
+            borderBottom: '1px solid var(--color-secondary)',
+            padding: '0 24px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+            zIndex: 50,
+            flexShrink: 0
+        }}>
                 <a href="/" style=${brandStyle}>
                     <span style=${logoTextStyle}>Mercyhurst</span>
                     <span style=${subBrandStyle}>Gradient Descent Explorer</span>

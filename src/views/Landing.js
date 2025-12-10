@@ -1,150 +1,199 @@
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Sphere } from '@react-three/drei';
+import { OrbitControls, Sphere, MeshDistortMaterial } from '@react-three/drei';
 import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
-import Button from '../components/UI/Button.js?v=3.1';
-import { ArrowRight } from 'lucide-react';
+import Button from '../components/UI/Button.js?v=3.3';
+import { ArrowRight, Activity, Box, Layers } from 'lucide-react';
 import html from '../htm.js';
 
-const WireframeSphere = () => {
+// --- 3D Hero Component: The "Glass" Planet ---
+const HeroSphere = () => {
     const sphereRef = useRef();
-
     useFrame(({ clock }) => {
-        sphereRef.current.rotation.y = clock.getElapsedTime() * 0.1;
+        if (sphereRef.current) {
+            sphereRef.current.rotation.y = clock.getElapsedTime() * 0.15;
+            sphereRef.current.rotation.x = Math.sin(clock.getElapsedTime() * 0.2) * 0.1;
+        }
     });
 
     return html`
-        <${Sphere} ref=${sphereRef} args=${[1, 32, 32]} scale=${2.2}>
-            <meshBasicMaterial 
-                color=${"#004E42"} 
-                wireframe=${true}
-                transparent
-                opacity=${0.15}
+        <${Sphere} ref=${sphereRef} args=${[1, 64, 64]} scale=${2.4}>
+            <${MeshDistortMaterial}
+                color="#003057"
+                attach="material"
+                distort=${0.4}
+                speed=${1.5}
+                roughness=${0.2}
+                metalness=${0.8}
+                wireframe=${false}
+                transparent=${true}
+                opacity=${0.8}
             />
         <//>
+        <ambientLight intensity=${0.5} />
+        <directionalLight position=${[10, 10, 5]} intensity=${1} />
+        <pointLight position=${[-10, -10, -5]} color="#7BAF9E" intensity=${2} />
     `;
 };
 
 const Landing = () => {
     const [, setLocation] = useLocation();
 
-    // --- STYLES ---
-    const containerStyle = { position: 'relative', width: '100%', height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column' };
-    const bgSceneStyle = { position: 'absolute', top: 0, right: '-20%', width: '60%', height: '100%', zIndex: 0, opacity: 0.6 };
-    const cameraSettings = { position: [0, 0, 5] };
+    // --- STYLES (Scope: Component) ---
+    const layoutStyle = {
+        display: 'flex',
+        height: '100%',
+        width: '100%',
+        background: 'var(--color-bg)',
+        fontFamily: 'var(--font-sans)'
+    };
 
-    const contentStyle = {
-        position: 'relative',
-        zIndex: 10,
-        flex: 1,
+    // Left Panel: Introduction & Content
+    const leftPanelStyle = {
+        width: '40%',
+        padding: '60px 40px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        padding: '0 10%',
-        maxWidth: '800px'
+        borderRight: '1px solid var(--color-border)',
+        background: 'var(--color-surface)',
+        zIndex: 10,
+        boxShadow: '4px 0 24px rgba(0,0,0,0.05)'
     };
 
-    const motionInitial = { opacity: 0, x: -30 };
-    const motionAnimate = { opacity: 1, x: 0 };
-    const motionTransition = { duration: 0.8 };
-
-    const subtitleStyle = {
-        textTransform: 'uppercase',
-        fontSize: '0.85rem',
-        letterSpacing: '0.1em',
-        color: 'var(--color-text-dim)',
-        marginBottom: '1rem',
-        fontWeight: 600
+    // Right Panel: 3D Visualization
+    const rightPanelStyle = {
+        flex: 1,
+        position: 'relative',
+        background: '#09121d', // Deep space dark for contrast with glass sphere
+        overflow: 'hidden'
     };
 
-    const titleStyle = {
+    const h1Style = {
         fontFamily: 'var(--font-serif)',
-        fontSize: '3.5rem',
-        margin: '0 0 20px 0',
-        color: 'var(--color-primary)', // Green
+        fontSize: '3rem',
+        color: 'var(--color-secondary)',
+        marginBottom: '1rem',
         lineHeight: 1.1
     };
 
-    const italicStyle = { fontStyle: 'italic', fontWeight: 400 };
-
-    const descStyle = {
-        fontSize: '1.15rem',
-        color: 'var(--color-text-dim)',
-        maxWidth: '500px',
-        margin: '0 0 40px 0',
-        lineHeight: 1.6
+    const subheaderStyle = {
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        color: 'var(--color-primary)',
+        fontWeight: 700,
+        fontSize: '0.85rem',
+        marginBottom: '1rem',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px'
     };
 
-    const btnStyle = { fontSize: '1rem', padding: '14px 28px' };
-
-    const footerStyle = {
-        position: 'absolute',
-        bottom: 40,
-        left: '10%',
+    const pStyle = {
+        fontSize: '1.1rem',
         color: 'var(--color-text-dim)',
-        fontSize: '0.9rem',
+        lineHeight: 1.6,
+        marginBottom: '2rem',
+        maxWidth: '500px'
+    };
+
+    const statsRowStyle = {
         display: 'flex',
-        gap: 40
+        gap: '30px',
+        marginTop: 'auto',
+        borderTop: '1px solid var(--color-border)',
+        paddingTop: '20px'
+    };
+
+    const statItemStyle = {
+        display: 'flex',
+        flexDirection: 'column'
+    };
+
+    const statNumStyle = {
+        fontSize: '1.5rem',
+        fontWeight: '700',
+        color: 'var(--color-secondary)',
+        fontFamily: 'var(--font-mono)'
+    };
+
+    const statLabelStyle = {
+        fontSize: '0.8rem',
+        color: 'var(--color-text-dim)',
+        marginTop: '4px'
     };
 
     return html`
-        <div style=${containerStyle}>
+        <div style=${layoutStyle}>
             
-            <!-- Background 3D Scene (Subtle) -->
-            <div style=${bgSceneStyle}>
-                <${Canvas} camera=${cameraSettings}>
-                    <${WireframeSphere} />
+            <!-- Left: Scholarship -->
+            <${motion.div} 
+                initial=${{ x: -50, opacity: 0 }} 
+                animate=${{ x: 0, opacity: 1 }} 
+                transition=${{ duration: 0.6 }}
+                style=${leftPanelStyle}
+            >
+                <div style=${subheaderStyle}>
+                    <${Activity} size=${16} />
+                    <span>Computation & Optimization</span>
+                </div>
+
+                <h1 style=${h1Style}>
+                    Intuition for <br/>
+                    <i style=${{ fontWeight: 300 }}>Gradient Descent</i>
+                </h1>
+
+                <p style=${pStyle}>
+                    Welcome to the Computational Observatory. This platform provides an interactive environment to explore the topology of loss functions and the mechanics of optimization algorithms.
+                </p>
+
+                <div style=${{ display: 'flex', gap: '16px' }}>
+                    <${Button} onClick=${() => setLocation('/playground')} icon=${Box}>
+                        Launch 3D Lab
+                    </${Button}>
+                    <${Button} variant="secondary" onClick=${() => setLocation('/2d')} icon=${Layers}>
+                        Open 2D Studio
+                    </${Button}>
+                </div>
+
+                <div style=${statsRowStyle}>
+                    <div style=${statItemStyle}>
+                        <span style=${statNumStyle}>3D</span>
+                        <span style=${statLabelStyle}>Interactive Surface</span>
+                    </div>
+                    <div style=${statItemStyle}>
+                        <span style=${statNumStyle}>2D</span>
+                        <span style=${statLabelStyle}>Contour Analysis</span>
+                    </div>
+                    <div style=${statItemStyle}>
+                        <span style=${statNumStyle}>v3.3</span>
+                        <span style=${statLabelStyle}>Mercyhurst Build</span>
+                    </div>
+                </div>
+            </${motion.div}>
+
+            <!-- Right: Visualization -->
+            <div style=${rightPanelStyle}>
+                <${Canvas} camera=${{ position: [0, 0, 6] }}>
+                    <${HeroSphere} />
                     <${OrbitControls} enableZoom=${false} autoRotate autoRotateSpeed=${0.5} />
                 <//>
+                
+                <!-- Overlay Decoration -->
+                <div style=${{
+            position: 'absolute',
+            bottom: 30,
+            right: 40,
+            color: 'rgba(255,255,255,0.3)',
+            fontFamily: 'monospace',
+            textAlign: 'right',
+            pointerEvents: 'none'
+        }}>
+                    COORD: 42.12° N, 80.08° W<br/>
+                    ESTD: 1926
+                </div>
             </div>
-
-            <!-- Content Left Aligned -->
-            <div style=${contentStyle}>
-                <${motion.div}
-                    initial=${motionInitial}
-                    animate=${motionAnimate}
-                    transition=${motionTransition}
-                >
-                    <div style=${subtitleStyle}>
-                        Mercyhurst University
-                    </div>
-
-                    <h1 style=${titleStyle}>
-                        Gradient Descent <br/>
-                        <span style=${italicStyle}>Optimization</span>
-                    </h1>
-                    
-                    <p style=${descStyle}>
-                        An interactive exploration of the fundamental algorithm behind machine learning. 
-                        Visualize loss landscapes and hyperparameters in a controlled 3D environment.
-                    </p>
-
-                    <${Button} 
-                        onClick=${() => setLocation('/playground')}
-                        style=${btnStyle}
-                        icon=${ArrowRight}
-                    >
-                        Enter Simulation
-                    <//>
-                <//>
-            </div>
-
-             <!-- Footer Info -->
-             <div style=${footerStyle}>
-                 <div>
-                     <strong>v2.0.1+Mercyhurst</strong><br/>
-                     Stable Build
-                 </div>
-                 <div>
-                     <strong>Three.js</strong><br/>
-                     r160
-                 </div>
-                 <div>
-                    <strong>React</strong><br/>
-                    18.2.0
-                 </div>
-             </div>
         </div>
     `;
 };
