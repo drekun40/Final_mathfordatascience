@@ -46,23 +46,26 @@ const Lab2D = () => {
     const history = points.map((p, i) => ({ i, loss: f(p.x, p.y) }));
 
     // --- STYLES ---
+    // Responsive Layout: Stacks vertically on small screens, side-by-side on large
     const layoutStyle = {
         padding: '24px',
-        height: 'calc(100vh - 64px)',
+        minHeight: 'calc(100vh - 64px)',
         background: 'var(--color-bg)',
-        display: 'grid',
-        gridTemplateColumns: 'minmax(300px, 350px) 1fr',
+        display: 'flex',
+        flexWrap: 'wrap',
         gap: '24px',
         boxSizing: 'border-box',
-        overflow: 'hidden' // Prevent full page scroll
+        overflowY: 'auto',
+        alignContent: 'flex-start'
     };
 
     const panelStyle = {
         display: 'flex',
         flexDirection: 'column',
         gap: '20px',
-        height: '100%',
-        overflowY: 'auto'
+        flex: '1 1 350px', // Grow, shrink, base width 350px
+        minWidth: '300px',
+        maxWidth: '100%'
     };
 
     const chartStyle = {
@@ -151,7 +154,7 @@ const Lab2D = () => {
             </div>
 
             <!-- Right Panel: Contour Studio -->
-            <div style=${{ height: '100%', position: 'relative' }}>
+            <div style=${{ flex: '2 1 500px', minHeight: '500px', position: 'relative', minWidth: '300px' }}>
                 <${GlassCard} style=${{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'white', padding: 0, overflow: 'hidden' }}>
                     <h3 style=${{ position: 'absolute', top: 20, right: 30, margin: 0, color: 'var(--color-text-dim)', opacity: 0.5, pointerEvents: 'none' }}>Topological View</h3>
                     
