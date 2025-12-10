@@ -13,41 +13,993 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;700&display=swap"
         rel="stylesheet">
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="./src/styles/variables.css">
-    <link rel="stylesheet" href="./src/styles/global.css">
-    <link rel="stylesheet" href="./src/styles/components.css">
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 
-    <!-- React & ReactDOM (Development Versions for better errors) -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-
-    <!-- Babel for JSX -->
+    <!-- Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* === VARIABLES === */
+        :root {
+            /* Premium Color Palette */
+            --color-primary: #6366f1;
+            /* Indigo 500 */
+            --color-primary-dark: #4f46e5;
+            --color-primary-light: #818cf8;
+            --color-secondary: #ec4899;
+            /* Pink 500 */
+            --color-accent: #06b6d4;
+            /* Cyan 500 */
+
+            --color-background: #f8fafc;
+            --color-surface: #ffffff;
+            --color-surface-glass: rgba(255, 255, 255, 0.7);
+
+            --color-text-main: #0f172a;
+            --color-text-muted: #64748b;
+            --color-text-light: #94a3b8;
+
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+
+            /* Gradients */
+            --gradient-mesh: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+                radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+            --gradient-card: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%);
+            --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+
+            /* Typography */
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-display: 'Outfit', system-ui, sans-serif;
+
+            /* Spacing */
+            --radius-sm: 0.375rem;
+            --radius-md: 0.75rem;
+            --radius-lg: 1rem;
+            --radius-xl: 1.5rem;
+
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+        }
+
+        /* === GLOBAL STYLES === */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--color-background);
+            color: var(--color-text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--color-text-main);
+        }
+
+        a {
+            color: var(--color-primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--color-primary-dark);
+        }
+
+        button {
+            font-family: var(--font-sans);
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        .bg-gradient-mesh {
+            background-color: #f3f4f6;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.15) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(0, 0, 0, 0) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* === COMPONENT STYLES === */
+        .card {
+            background: var(--color-surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: var(--spacing-lg);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-text-main);
+            border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-secondary:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .btn-icon {
+            padding: 0.5rem;
+            border-radius: 50%;
+        }
+
+        .input-range {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .input-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            cursor: pointer;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            transition: box-shadow 0.2s;
+        }
+
+        .input-range::-webkit-slider-thumb:hover {
+            box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .grid-container {
+            display: grid;
+            gap: var(--spacing-md);
+        }
+
+        @media (min-width: 768px) {
+            .grid-cols-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-gradient {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .space-y-4>*+* {
+            margin-top: 1rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+
+        .p-6 {
+            padding: 1.5rem;
+        }
+
+        .rounded-xl {
+            border-radius: var(--radius-xl);
+        }
+
+        .shadow-lg {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-pill {
+            padding: 0.5rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            color: var(--color-text-muted);
+            transition: all 0.2s ease;
+        }
+
+        .nav-pill.active {
+            background: var(--color-primary);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-pill:not(.active):hover {
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--color-primary);
+        }
+    </style>
 </head>
 
 <body class="bg-gradient-mesh">
     <div id="root"></div>
 
-    <!-- Components (Load Order Matters) -->
-    <script type="text/babel" src="./src/components/Introduction.js"></script>
-    <script type="text/babel" src="./src/components/Viz2D.js"></script>
-    <script type="text/babel" src="./src/components/Viz3D.js"></script>
-    <script type="text/babel" src="./src/components/Quiz.js"></script>
-    <script type="text/babel" src="./src/App.js"></script>
-
     <script type="text/babel" data-presets="react">
-        // Import Lucide icons globally
-        window.Lucide = window.lucide;
+        // === INTRODUCTION COMPONENT ===
+        const Introduction = () => {
+            return (
+                <div className="space-y-8 animate-fade-in">
+                    <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg shadow-sm">
+                        <h3 className="text-2xl font-bold text-blue-900 mb-4 flex items-center gap-2">
+                            <i data-lucide="book-open" className="w-6 h-6"></i>
+                            What is Gradient Descent?
+                        </h3>
+                        <p className="text-gray-700 leading-relaxed text-lg">
+                            Gradient descent is an iterative optimization algorithm for finding a local minimum of a differentiable function.
+                            It works by taking steps proportional to the negative of the gradient (or approximate gradient) of the function at the current point.
+                        </p>
+                    </div>
 
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <div className="card bg-white p-6 rounded-xl border-l-4 border-l-purple-500">
+                            <h4 className="font-bold text-xl mb-4 text-gray-800 flex items-center gap-2">
+                                <i data-lucide="activity" className="w-5 h-5 text-purple-600"></i>
+                                The Algorithm
+                            </h4>
+                            <div className="space-y-3 text-gray-600">
+                                <p className="flex items-start gap-2">
+                                    <span className="bg-purple-100 text-purple-700 font-bold px-2 py-0.5 rounded text-sm mt-0.5">1</span>
+                                    Start at a random point <span className="font-mono bg-gray-100 px-1 rounded">x₀</span>
+                                </p>
+                                <p className="flex items-start gap-2">
+                                    <span className="bg-purple-100 text-purple-700 font-bold px-2 py-0.5 rounded text-sm mt-0.5">2</span>
+                                    Calculate the gradient <span className="font-mono bg-gray-100 px-1 rounded">∇f(x)</span>
+                                </p>
+                                <p className="flex items-start gap-2">
+                                    <span className="bg-purple-100 text-purple-700 font-bold px-2 py-0.5 rounded text-sm mt-0.5">3</span>
+                                    Update: <span className="font-mono bg-gray-100 px-1 rounded">x_{n + 1} = x_n - α∇f(x_n)</span>
+                                </p>
+                                <p className="flex items-start gap-2">
+                                    <span className="bg-purple-100 text-purple-700 font-bold px-2 py-0.5 rounded text-sm mt-0.5">4</span>
+                                    Repeat until convergence
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="card bg-white p-6 rounded-xl border-l-4 border-l-cyan-500">
+                            <h4 className="font-bold text-xl mb-4 text-gray-800 flex items-center gap-2">
+                                <i data-lucide="settings" className="w-5 h-5 text-cyan-600"></i>
+                                Key Parameters
+                            </h4>
+                            <ul className="space-y-4 text-gray-600">
+                                <li className="flex flex-col">
+                                    <span className="font-semibold text-cyan-900">Learning Rate (α)</span>
+                                    <span className="text-sm">Determines the size of the steps we take to reach a minimum. Too low = slow, Too high = overshoot.</span>
+                                </li>
+                                <li className="flex flex-col">
+                                    <span className="font-semibold text-cyan-900">Cost Function (J)</span>
+                                    <span className="text-sm">Measues how wrong the model is in terms of its ability to estimate the relationship between X and y.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg shadow-sm">
+                        <h4 className="font-bold text-xl mb-3 text-yellow-900 flex items-center gap-2">
+                            <i data-lucide="lightbulb" className="w-6 h-6"></i>
+                            Intuition: The "Mountain" Analogy
+                        </h4>
+                        <p className="text-gray-700 leading-relaxed text-lg">
+                            Imagine you are standing on top of a mountain in dense fog. You can only feel the slope of the ground under your feet.
+                            To get to the bottom (the minimum), you constantly check the steepest way down and take a small step in that direction.
+                            Gradient descent works exactly the same way!
+                        </p>
+                    </div>
+                </div>
+            );
+        };
+
+        // === 2D VISUALIZATION COMPONENT ===
+        const Viz2D = () => {
+            const [points, setPoints] = React.useState([{ x: -8, y: 64 }]);
+            const [isAnimating, setIsAnimating] = React.useState(false);
+            const [learningRate, setLearningRate] = React.useState(0.1);
+
+            // f(x) = x^2, f'(x) = 2x
+            const f = (x) => x * x;
+            const df = (x) => 2 * x;
+
+            const step = () => {
+                setPoints(prev => {
+                    const last = prev[prev.length - 1];
+                    const gradient = df(last.x);
+                    const newX = last.x - learningRate * gradient;
+                    const newY = f(newX);
+                    return [...prev, { x: newX, y: newY }];
+                });
+            };
+
+            React.useEffect(() => {
+                let interval;
+                if (isAnimating && points.length < 50) {
+                    interval = setInterval(step, 200);
+                } else if (points.length >= 50) {
+                    setIsAnimating(false);
+                }
+                return () => clearInterval(interval);
+            }, [isAnimating, points, learningRate]);
+
+            const reset = () => {
+                setPoints([{ x: -8, y: 64 }]);
+                setIsAnimating(false);
+            };
+
+            return (
+                <div className="space-y-6 animate-fade-in">
+                    <div className="card bg-white p-6 rounded-xl">
+                        <div className="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 className="text-2xl font-bold font-display text-gray-800">2D Descent: f(x) = x²</h3>
+                                <p className="text-gray-500">Visualizing optimization on a simple convex function</p>
+                            </div>
+                            <div className="text-right">
+                                <div className="text-3xl font-mono font-bold text-primary">
+                                    {points[points.length - 1].y.toFixed(4)}
+                                </div>
+                                <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Current Cost</div>
+                            </div>
+                        </div>
+
+                        <div className="bg-gray-50 p-4 rounded-lg mb-6 flex flex-wrap gap-6 items-center border border-gray-100">
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => setIsAnimating(!isAnimating)}
+                                    className={`btn ${isAnimating ? 'btn-secondary' : 'btn-primary'}`}
+                                >
+                                    {isAnimating ? (
+                                        <React.Fragment><i data-lucide="pause" className="w-4 h-4"></i> Pause</React.Fragment>
+                                    ) : (
+                                        <React.Fragment><i data-lucide="play" className="w-4 h-4"></i> Start Descent</React.Fragment>
+                                    )}
+                                </button>
+
+                                <button onClick={reset} className="btn btn-secondary">
+                                    <i data-lucide="rotate-ccw" className="w-4 h-4"></i> Reset
+                                </button>
+                            </div>
+
+                            <div className="flex items-center gap-4 flex-1">
+                                <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
+                                    Learning Rate (α):
+                                </label>
+                                <input
+                                    type="range"
+                                    min="0.01"
+                                    max="0.5"
+                                    step="0.01"
+                                    value={learningRate}
+                                    onChange={(e) => setLearningRate(parseFloat(e.target.value))}
+                                    className="input-range flex-1"
+                                />
+                                <span className="text-sm font-mono font-bold bg-white px-2 py-1 rounded border border-gray-200">
+                                    {learningRate.toFixed(2)}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="relative w-full h-[400px] bg-white border border-gray-100 rounded-xl overflow-hidden shadow-inner">
+                            <svg width="100%" height="100%" viewBox="0 0 600 300" preserveAspectRatio="none">
+                                {[...Array(11)].map((_, i) => (
+                                    <line
+                                        key={`grid-${i}`}
+                                        x1={50 + i * 50}
+                                        y1={0}
+                                        x2={50 + i * 50}
+                                        y2={300}
+                                        stroke="#f1f5f9"
+                                        strokeWidth="1"
+                                    />
+                                ))}
+
+                                <line x1="300" y1="0" x2="300" y2="300" stroke="#e2e8f0" strokeWidth="2" />
+                                <line x1="0" y1="270" x2="600" y2="270" stroke="#e2e8f0" strokeWidth="2" />
+
+                                <path
+                                    d={`M 50 270 ${[...Array(100)].map((_, i) => {
+                                        const x = -10 + i * 0.2;
+                                        const y = f(x);
+                                        const px = 300 + x * 25;
+                                        const py = 270 - y * 3;
+                                        return `L ${px} ${py}`;
+                                    }).join(' ')}`}
+                                    fill="none"
+                                    stroke="var(--color-primary-light)"
+                                    strokeWidth="3"
+                                    strokeLinecap="round"
+                                />
+
+                                {points.length > 1 && (
+                                    <path
+                                        d={points.map((p, i) => {
+                                            const px = 300 + p.x * 25;
+                                            const py = 270 - p.y * 3;
+                                            return i === 0 ? `M ${px} ${py}` : `L ${px} ${py}`;
+                                        }).join(' ')}
+                                        fill="none"
+                                        stroke="var(--color-secondary)"
+                                        strokeWidth="2"
+                                        strokeDasharray="4,4"
+                                        opacity="0.6"
+                                    />
+                                )}
+
+                                {points.map((p, i) => {
+                                    const px = 300 + p.x * 25;
+                                    const py = 270 - p.y * 3;
+                                    const isHead = i === points.length - 1;
+                                    return (
+                                        <g key={i}>
+                                            {isHead && (
+                                                <circle cx={px} cy={py} r="12" fill="var(--color-secondary)" opacity="0.2">
+                                                    <animate attributeName="r" values="8;16;8" dur="2s" repeatCount="indefinite" />
+                                                    <animate attributeName="opacity" values="0.2;0;0.2" dur="2s" repeatCount="indefinite" />
+                                                </circle>
+                                            )}
+                                            <circle
+                                                cx={px}
+                                                cy={py}
+                                                r={isHead ? 6 : 3}
+                                                fill={isHead ? "var(--color-secondary)" : "var(--color-primary)"}
+                                                className="transition-all duration-300"
+                                            />
+                                        </g>
+                                    );
+                                })}
+
+                                <text x="50" y="290" fill="#94a3b8" fontSize="12">-10</text>
+                                <text x="300" y="290" fill="#94a3b8" fontSize="12">0</text>
+                                <text x="550" y="290" fill="#94a3b8" fontSize="12">10</text>
+                            </svg>
+                        </div>
+
+                        <div className="mt-4 flex justify-between text-sm text-gray-500">
+                            <div>Step: {points.length - 1}</div>
+                            <div>Position: x = {points[points.length - 1].x.toFixed(3)}</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // === 3D VISUALIZATION COMPONENT ===
+        const Viz3D = () => {
+            const canvasRef = React.useRef(null);
+            const [points3D, setPoints3D] = React.useState([{ x: 2, y: 2, z: 8 }]);
+            const [isAnimating3D, setIsAnimating3D] = React.useState(false);
+            const [rotation, setRotation] = React.useState({ x: 30, y: 45 });
+            const [showMath, setShowMath] = React.useState(false);
+
+            const f3D = (x, y) => x * x + y * y;
+            const df3D = (x, y) => ({ dx: 2 * x, dy: 2 * y });
+
+            const project3D = (x, y, z, rotX, rotY) => {
+                const scale = 40;
+                const cx = 250;
+                const cy = 200;
+
+                const rad = Math.PI / 180;
+                const cosY = Math.cos(rotY * rad);
+                const sinY = Math.sin(rotY * rad);
+                const x1 = x * cosY - z * sinY;
+                const z1 = x * sinY + z * cosY;
+
+                const cosX = Math.cos(rotX * rad);
+                const sinX = Math.sin(rotX * rad);
+                const y1 = y * cosX - z1 * sinX;
+
+                return {
+                    x: cx + x1 * scale,
+                    y: cy - y1 * scale
+                };
+            };
+
+            const draw3D = () => {
+                const canvas = canvasRef.current;
+                if (!canvas) return;
+
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, 500, 400);
+
+                const gridSize = 20;
+                const range = 3;
+                const step = (range * 2) / gridSize;
+
+                ctx.strokeStyle = 'rgba(99, 102, 241, 0.2)';
+                ctx.lineWidth = 1;
+
+                for (let i = 0; i <= gridSize; i++) {
+                    const x = -range + i * step;
+                    for (let j = 0; j <= gridSize; j++) {
+                        const y = -range + j * step;
+                        const z = f3D(x, y);
+                        const p = project3D(x, y, z, rotation.x, rotation.y);
+
+                        if (j < gridSize) {
+                            const y2 = -range + (j + 1) * step;
+                            const z2 = f3D(x, y2);
+                            const p2 = project3D(x, y2, z2, rotation.x, rotation.y);
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.stroke();
+                        }
+
+                        if (i < gridSize) {
+                            const x2 = -range + (i + 1) * step;
+                            const z2 = f3D(x2, y);
+                            const p2 = project3D(x2, y, z2, rotation.x, rotation.y);
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                ctx.strokeStyle = '#6366f1';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.shadowBlur = 4;
+                ctx.shadowColor = "rgba(99, 102, 241, 0.5)";
+
+                for (let i = 0; i < points3D.length; i++) {
+                    const p = points3D[i];
+                    const proj = project3D(p.x, p.y, p.z, rotation.x, rotation.y);
+                    if (i === 0) ctx.moveTo(proj.x, proj.y);
+                    else ctx.lineTo(proj.x, proj.y);
+                }
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+
+                points3D.forEach((p, i) => {
+                    const proj = project3D(p.x, p.y, p.z, rotation.x, rotation.y);
+                    ctx.fillStyle = i === points3D.length - 1 ? '#ec4899' : '#6366f1';
+                    ctx.beginPath();
+                    ctx.arc(proj.x, proj.y, i === points3D.length - 1 ? 6 : 4, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                const minProj = project3D(0, 0, 0, rotation.x, rotation.y);
+                ctx.fillStyle = '#10b981';
+                ctx.beginPath();
+                ctx.arc(minProj.x, minProj.y, 5, 0, Math.PI * 2);
+                ctx.fill();
+            };
+
+            React.useEffect(() => {
+                draw3D();
+            }, [points3D, rotation]);
+
+            const step3D = () => {
+                setPoints3D(prev => {
+                    const last = prev[prev.length - 1];
+                    const grad = df3D(last.x, last.y);
+                    const newX = last.x - 0.1 * grad.dx;
+                    const newY = last.y - 0.1 * grad.dy;
+                    const newZ = f3D(newX, newY);
+                    return [...prev, { x: newX, y: newY, z: newZ }];
+                });
+            };
+
+            React.useEffect(() => {
+                let interval;
+                if (isAnimating3D && points3D.length < 50) {
+                    interval = setInterval(step3D, 200);
+                } else if (points3D.length >= 50) {
+                    setIsAnimating3D(false);
+                }
+                return () => clearInterval(interval);
+            }, [isAnimating3D, points3D]);
+
+            return (
+                <div className="space-y-6 animate-fade-in">
+                    <div className="card bg-white rounded-xl">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                            <div>
+                                <h3 className="text-2xl font-bold font-display text-gray-800">3D Descent: f(x,y) = x² + y²</h3>
+                                <p className="text-gray-500">Multivariate optimization visualization</p>
+                            </div>
+                            <button
+                                onClick={() => setShowMath(!showMath)}
+                                className="btn btn-secondary text-sm"
+                            >
+                                <i data-lucide={showMath ? "eye-off" : "eye"} className="w-4 h-4"></i>
+                                {showMath ? "Hide Math" : "Show Math"}
+                            </button>
+                        </div>
+
+                        <div className="grid md:grid-cols-[1fr_300px] gap-6">
+                            <div className="relative border border-gray-100 rounded-xl overflow-hidden bg-gray-50 shadow-inner cursor-grab active:cursor-grabbing">
+                                <canvas
+                                    ref={canvasRef}
+                                    width={500}
+                                    height={400}
+                                    className="w-full h-auto"
+                                    onMouseDown={(e) => {
+                                        const startX = e.clientX;
+                                        const startY = e.clientY;
+                                        const startRotation = { ...rotation };
+
+                                        const handleMove = (e) => {
+                                            const dx = e.clientX - startX;
+                                            const dy = e.clientY - startY;
+                                            setRotation({
+                                                x: startRotation.x + dy * 0.5,
+                                                y: startRotation.y + dx * 0.5
+                                            });
+                                        };
+
+                                        const handleUp = () => {
+                                            document.removeEventListener('mousemove', handleMove);
+                                            document.removeEventListener('mouseup', handleUp);
+                                        };
+
+                                        document.addEventListener('mousemove', handleMove);
+                                        document.addEventListener('mouseup', handleUp);
+                                    }}
+                                />
+                                <div className="absolute top-4 left-4 bg-white/80 backdrop-blur px-3 py-1 rounded-full text-xs font-medium text-gray-500 shadow-sm pointer-events-none">
+                                    <i data-lucide="move" className="w-3 h-3 inline mr-1"></i> Drag to rotate
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                                    <div className="text-xs text-blue-600 font-bold uppercase tracking-wider mb-2">Current State</div>
+                                    <div className="space-y-1 font-mono text-sm">
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500">x:</span>
+                                            <span>{points3D[points3D.length - 1].x.toFixed(3)}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500">y:</span>
+                                            <span>{points3D[points3D.length - 1].y.toFixed(3)}</span>
+                                        </div>
+                                        <div className="flex justify-between font-bold text-primary">
+                                            <span className="text-gray-500 font-normal">Cost:</span>
+                                            <span>{points3D[points3D.length - 1].z.toFixed(3)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-2 flex-col">
+                                    <button
+                                        onClick={() => setIsAnimating3D(!isAnimating3D)}
+                                        className={`btn w-full ${isAnimating3D ? 'btn-secondary' : 'btn-primary'}`}
+                                    >
+                                        {isAnimating3D ? 'Pause Descent' : 'Start Descent'}
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setPoints3D([{ x: 2, y: 2, z: 8 }]);
+                                            setIsAnimating3D(false);
+                                        }}
+                                        className="btn btn-secondary w-full"
+                                    >
+                                        Reset Position
+                                    </button>
+                                </div>
+
+                                {showMath && (
+                                    <div className="bg-purple-50 p-4 rounded-lg border border-purple-100 animate-fade-in text-sm">
+                                        <h5 className="font-bold text-purple-900 mb-2">Gradients</h5>
+                                        <p className="text-gray-700">∇f = [2x, 2y]</p>
+                                        <p className="text-gray-700 mt-1">Min at (0,0)</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // === QUIZ COMPONENT ===
+        const Quiz = () => {
+            const [answers, setAnswers] = React.useState({});
+            const [showResults, setShowResults] = React.useState(false);
+
+            const questions = [
+                {
+                    q: "What does the gradient vector represent?",
+                    options: ["Direction of steepest ascent", "Direction of steepest descent", "A random direction", "The minimum point itself"],
+                    correct: 0
+                },
+                {
+                    q: "What is the role of the Learning Rate (α)?",
+                    options: ["It determines the final value", "It controls the step size of each iteration", "It changes the cost function", "It sets the starting position"],
+                    correct: 1
+                },
+                {
+                    q: "In 2D, if f(x) = x², what is the derivative f'(x) at x = 3?",
+                    options: ["9", "3", "6", "0"],
+                    correct: 2
+                },
+                {
+                    q: "Where does gradient descent stop?",
+                    options: ["At the maximum", "When the gradient is close to zero (convergence)", "After exactly 10 steps", "It never stops"],
+                    correct: 1
+                }
+            ];
+
+            const checkQuiz = () => {
+                setShowResults(true);
+            };
+
+            const score = Object.keys(answers).filter(k => answers[k] === questions[k].correct).length;
+
+            return (
+                <div className="max-w-3xl mx-auto space-y-8 animate-fade-in">
+                    <div className="text-center mb-8">
+                        <h3 className="text-3xl font-bold font-display text-gray-800">Test Your Knowledge</h3>
+                        <p className="text-gray-500">Validate your understanding of gradient descent concepts.</p>
+                    </div>
+
+                    <div className="space-y-6">
+                        {questions.map((q, qIdx) => {
+                            const isCorrect = showResults && answers[qIdx] === q.correct;
+                            const isWrong = showResults && answers[qIdx] !== q.correct && answers[qIdx] !== undefined;
+
+                            return (
+                                <div
+                                    key={qIdx}
+                                    className={`card bg-white p-6 rounded-xl border-l-4 transition-all
+                                    ${showResults
+                                            ? (isCorrect ? 'border-l-green-500 bg-green-50/30' : (isWrong ? 'border-l-red-500 bg-red-50/30' : 'border-l-gray-200'))
+                                            : 'border-l-transparent hover:border-l-primary'
+                                        }`}
+                                >
+                                    <p className="font-bold text-lg mb-4 text-gray-800">{qIdx + 1}. {q.q}</p>
+                                    <div className="space-y-3">
+                                        {q.options.map((opt, oIdx) => (
+                                            <label
+                                                key={oIdx}
+                                                className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer border transition-all
+                                                    ${answers[qIdx] === oIdx
+                                                        ? 'bg-primary/5 border-primary ring-1 ring-primary'
+                                                        : 'bg-white border-gray-200 hover:bg-gray-50'}
+                                                `}
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    name={`q${qIdx}`}
+                                                    value={oIdx}
+                                                    checked={answers[qIdx] === oIdx}
+                                                    onChange={() => setAnswers({ ...answers, [qIdx]: oIdx })}
+                                                    className="accent-primary w-4 h-4"
+                                                    disabled={showResults}
+                                                />
+                                                <span className={`flex-1 ${showResults && oIdx === q.correct ? 'font-bold text-green-700' : ''}`}>
+                                                    {opt}
+                                                    {showResults && oIdx === q.correct && " (Correct Answer)"}
+                                                </span>
+                                                {showResults && answers[qIdx] === oIdx && (
+                                                    <i data-lucide={isCorrect ? "check-circle" : "x-circle"}
+                                                        className={`w-5 h-5 ${isCorrect ? "text-green-500" : "text-red-500"}`}></i>
+                                                )}
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {!showResults ? (
+                        <div className="flex justify-center pt-4">
+                            <button
+                                onClick={checkQuiz}
+                                disabled={Object.keys(answers).length < questions.length}
+                                className="btn btn-primary text-lg px-8 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Submit Answers
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="card bg-gradient-mesh p-8 text-center rounded-xl border border-primary/20 animate-fade-in text-white">
+                            <h4 className="text-2xl font-bold font-display text-gray-900 mb-2">Quiz Results</h4>
+                            <div className="text-6xl font-bold text-primary mb-2">{score} / {questions.length}</div>
+                            <p className="text-gray-600 mb-6">
+                                {score === questions.length ? "Perfect score! You're a gradient descent master! 🎉" : "Good effort! Review the concepts and try again."}
+                            </p>
+                            <button
+                                onClick={() => {
+                                    setAnswers({});
+                                    setShowResults(false);
+                                }}
+                                className="btn btn-secondary"
+                            >
+                                <i data-lucide="rotate-ccw" className="w-4 h-4"></i> Retry Quiz
+                            </button>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // === APP COMPONENT ===
+        const App = () => {
+            const [currentSection, setCurrentSection] = React.useState('intro');
+
+            const renderSection = () => {
+                switch (currentSection) {
+                    case 'intro': return <Introduction />;
+                    case '2d': return <Viz2D />;
+                    case '3d': return <Viz3D />;
+                    case 'quiz': return <Quiz />;
+                    default: return <Introduction />;
+                }
+            };
+
+            const navItems = [
+                { id: 'intro', label: 'Introduction' },
+                { id: '2d', label: '2D Visualization' },
+                { id: '3d', label: '3D Visualization' },
+                { id: 'quiz', label: 'Quiz' },
+            ];
+
+            return (
+                <div className="min-h-screen flex flex-col bg-gray-50/50">
+                    <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
+                        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <div className="bg-primary/10 p-2 rounded-lg">
+                                    <i data-lucide="trending-down" className="w-6 h-6 text-primary"></i>
+                                </div>
+                                <h1 className="text-xl font-bold font-display text-gray-900 tracking-tight">
+                                    Gradient<span className="text-primary">Descent</span>
+                                </h1>
+                            </div>
+
+                            <nav className="hidden md:flex items-center gap-1 bg-gray-100/50 p-1 rounded-lg border border-gray-200/50">
+                                {navItems.map((item) => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => setCurrentSection(item.id)}
+                                        className={`nav-pill ${currentSection === item.id ? 'active' : ''}`}
+                                    >
+                                        {item.label}
+                                    </button>
+                                ))}
+                            </nav>
+
+                            <div className="md:hidden">
+                                <span className="text-sm font-medium text-gray-500">{navItems.find(i => i.id === currentSection).label}</span>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-2 z-50 pb-safe">
+                        <div className="flex justify-around">
+                            {navItems.map((item) => (
+                                <button
+                                    key={item.id}
+                                    onClick={() => setCurrentSection(item.id)}
+                                    className={`flex flex-col items-center p-2 rounded-lg text-xs font-medium w-full
+                                        ${currentSection === item.id ? 'text-primary' : 'text-gray-400'}
+                                    `}
+                                >
+                                    <i data-lucide={
+                                        item.id === 'intro' ? 'book' :
+                                            item.id === '2d' ? 'bar-chart-2' :
+                                                item.id === '3d' ? 'layers' : 'check-square'
+                                    } className="w-5 h-5 mb-1"></i>
+                                    {item.label.split(' ')[0]}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-8 md:py-12 pb-24 md:pb-12">
+                        {renderSection()}
+                    </main>
+
+                    <footer className="bg-white border-t border-gray-200 py-8 text-center text-sm text-gray-400">
+                        <p>© 2025 Gradient Descent Explorer. Built with React & Vanilla CSS.</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        // Initialize
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        const App = window.App;
         root.render(<App />);
 
-        // Initialize icons after render
+        // Lucide
         setTimeout(() => lucide.createIcons(), 100);
     </script>
 </body>
