@@ -193,6 +193,10 @@ const Landing = () => {
                     COORD: 42.12° N, 80.08° W<br/>
                     ESTD: 1926
                 </div>
+                <!-- Version Indicator -->
+                <div style=${{ position: 'absolute', bottom: '10px', right: '10px', color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem' }}>
+                    System v3.12.0
+                </div>
             </div>
         </div>
     `;
