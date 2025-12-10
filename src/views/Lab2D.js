@@ -51,22 +51,42 @@ const Lab2D = () => {
         height: 'calc(100vh - 64px)',
         background: 'var(--color-bg)',
         display: 'grid',
-        gridTemplateColumns: '350px 1fr',
+        gridTemplateColumns: 'minmax(300px, 350px) 1fr',
         gap: '24px',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        overflow: 'hidden' // Prevent full page scroll
     };
 
     const panelStyle = {
         display: 'flex',
         flexDirection: 'column',
-        gap: '20px'
+        gap: '20px',
+        height: '100%',
+        overflowY: 'auto'
     };
 
-    const headerStyle = {
+    const chartStyle = {
+        flex: 1,
+        minHeight: '200px',
+        position: 'relative',
+        border: '1px solid var(--color-border)',
+        borderRadius: '8px',
+        background: '#fff',
+        padding: '12px'
+    };
+
+    const h3Style = {
+        margin: '0 0 12px 0',
+        color: 'var(--color-secondary)',
         fontFamily: 'var(--font-serif)',
-        color: 'var(--color-primary)',
-        margin: '0 0 10px 0',
-        fontSize: '1.5rem'
+        fontSize: '1.2rem'
+    };
+
+    const captionStyle = {
+        fontSize: '0.8rem',
+        color: 'var(--color-text-dim)',
+        marginTop: '8px',
+        fontStyle: 'italic'
     };
 
     return html`
@@ -74,8 +94,10 @@ const Lab2D = () => {
             
             <!-- Left Panel: Controls & Telemetry -->
             <div style=${panelStyle}>
+                
+                <!-- Controls Card -->
                 <${GlassCard}>
-                    <h3 style=${{ marginTop: 0, color: 'var(--color-secondary)' }}>Analysis Controls</h3>
+                    <h3 style=${h3Style}>Analysis Controls</h3>
                     <${Slider} 
                         label="Learning Rate (α)" 
                         value=${lr} 
@@ -98,74 +120,75 @@ const Lab2D = () => {
                     </div>
                 <//>
 
+                <!-- Loss Curve Card -->
                 <${GlassCard} style=${{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    <h3 style=${{ marginTop: 0, color: 'var(--color-secondary)' }}>Convergence Plot</h3>
-                    <${GlassCard} style=${flex1Style}>
-                        <h3 style=${h3topStyle}>Loss Curve</h3>
-                        <div style=${svgContainerStyle}>
-                            <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-                                <path 
-                                    d=${`M 0 100 ${history.map(h => `L ${h.i * 2} ${100 - h.loss * 5}`).join(' ')}`} 
-                                    fill="none" 
-                                    stroke="var(--color-accent)" 
-                                    strokeWidth="2"
-                                    vectorEffect="non-scaling-stroke"
-                                />
-                            </svg>
-                        </div>
-                        <p style=${captionStyle}>
-                            This graph shows how quickly the error (Cost) decreases over time.
-                        </p>
-                    <//>
+                    <h3 style=${h3Style}>Loss Curve</h3>
+                    <div style=${chartStyle}>
+                        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                            <path 
+                                d=${`M 0 100 ${history.map(h => `L ${h.i * 2} ${100 - h.loss * 5}`).join(' ')}`} 
+                                fill="none" 
+                                stroke="var(--color-accent)" 
+                                strokeWidth="2"
+                                vectorEffect="non-scaling-stroke"
+                            />
+                        </svg>
+                    </div>
+                    <p style=${captionStyle}>
+                        This graph shows how quickly the error (Cost) decreases over time.
+                    </p>
+                <//>
 
-                    <!-- ADDED: Theory Section -->
-                    <${GlassCard} style=${{ borderLeft: '4px solid var(--color-primary)' }}>
-                        <h4 style=${{ margin: '0 0 8px 0', color: 'var(--color-primary)', fontFamily: 'var(--font-serif)' }}>Concept: Contour Maps</h4>
-                        <p style=${{ fontSize: '0.85rem', color: 'var(--color-text-dim)', lineHeight: 1.5, margin: 0 }}>
-                            Contour lines represent points of <strong>equal height</strong> (loss).
-                            When the lines are close together, the slope is steep.
-                            The algorithm moves perpendicular to these lines, seeking the center (minimum).
-                        </p>
-                    <//>
+                <!-- Theory Card -->
+                <${GlassCard} style=${{ borderLeft: '4px solid var(--color-primary)' }}>
+                    <h4 style=${{ margin: '0 0 8px 0', color: 'var(--color-primary)', fontFamily: 'var(--font-serif)' }}>Concept: Contour Maps</h4>
+                    <p style=${{ fontSize: '0.9rem', color: 'var(--color-text-dim)', lineHeight: 1.5, margin: 0 }}>
+                        Contour lines represent points of <strong>equal height</strong> (loss).
+                        When the lines are close together, the slope is steep.
+                        The algorithm moves perpendicular to these lines, seeking the center (minimum).
+                    </p>
                 <//>
             </div>
 
             <!-- Right Panel: Contour Studio -->
-            <${GlassCard} style=${{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'white' }}>
-                <h3 style=${{ position: 'absolute', top: 20, right: 20, margin: 0, color: 'var(--color-text-dim)', opacity: 0.5 }}>Topological View</h3>
-                
-                <svg width="80%" height="80%" viewBox="-10 -10 20 20">
-                    <!-- Axes -->
-                    <line x1="-10" y1="0" x2="10" y2="0" stroke="var(--color-border)" strokeWidth="0.05" />
-                    <line x1="0" y1="-10" x2="0" y2="10" stroke="var(--color-border)" strokeWidth="0.05" />
+            <div style=${{ height: '100%', position: 'relative' }}>
+                <${GlassCard} style=${{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'white', padding: 0, overflow: 'hidden' }}>
+                    <h3 style=${{ position: 'absolute', top: 20, right: 30, margin: 0, color: 'var(--color-text-dim)', opacity: 0.5, pointerEvents: 'none' }}>Topological View</h3>
+                    
+                    <svg width="90%" height="90%" viewBox="-12 -12 24 24" style=${{ overflow: 'visible' }}>
+                        <!-- Axes -->
+                        <line x1="-12" y1="0" x2="12" y2="0" stroke="var(--color-border)" strokeWidth="0.05" />
+                        <line x1="0" y1="-12" x2="0" y2="12" stroke="var(--color-border)" strokeWidth="0.05" />
 
-                    <!-- Contours -->
-                    ${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(r => html`
-                        <circle key=${r} cx="0" cy="0" r=${r} fill="none" stroke="var(--color-primary)" strokeWidth="0.05" opacity="0.2" />
-                    `)}
+                        <!-- Contours -->
+                        ${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(r => html`
+                            <circle key=${r} cx="0" cy="0" r=${r} fill="none" stroke="var(--color-primary)" strokeWidth="0.05" opacity="0.15" />
+                        `)}
 
-                    <!-- Path -->
-                    <polyline 
-                        points=${points.map(p => `${p.x},${-p.y}`).join(' ')} 
-                        fill="none" 
-                        stroke="var(--color-secondary)" 
-                        strokeWidth="0.1" 
-                        strokeOpacity="0.8"
-                    />
-
-                    <!-- Points -->
-                    ${points.map((p, i) => html`
-                         <circle 
-                            key=${i} 
-                            cx=${p.x} 
-                            cy=${-p.y} 
-                            r="0.3" 
-                            fill=${i === points.length - 1 ? '#dc2626' : 'var(--color-primary)'}
-                            opacity=${i === points.length - 1 ? 1 : 0.4}
+                        <!-- Path -->
+                        <polyline 
+                            points=${points.map(p => `${p.x},${p.y}`).join(' ')} 
+                            fill="none" 
+                            stroke="var(--color-secondary)" 
+                            strokeWidth="0.15" 
+                            strokeOpacity="0.8"
+                            strokeLinejoin="round"
                         />
-                    `)}
-                </svg>
-            <//>
+
+                        <!-- Points -->
+                        ${points.map((p, i) => html`
+                             <circle 
+                                key=${i} 
+                                cx=${p.x} 
+                                cy=${p.y} 
+                                r=${i === points.length - 1 ? 0.3 : 0.15}
+                                fill=${i === points.length - 1 ? '#dc2626' : 'var(--color-primary)'}
+                                opacity=${i === points.length - 1 ? 1 : 0.5}
+                            />
+                        `)}
+                    </svg>
+                <//>
+            </div>
 
         </div>
     `;
