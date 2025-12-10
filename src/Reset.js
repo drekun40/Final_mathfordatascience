@@ -19,10 +19,11 @@ const useHashLocation = () => {
     return [loc, navigate];
 };
 
-// --- Re-integrating Components with Cache Busting v=3.6 ---
-import Landing from './views/Landing.js?v=3.6';
-import Playground from './views/Playground.js?v=3.6';
-import Lab2D from './views/Lab2D.js?v=3.6';
+// --- Re-integrating Components with Cache Busting v=3.7 ---
+import Landing from './views/Landing.js?v=3.7';
+import Playground from './views/Playground.js?v=3.7';
+import Lab2D from './views/Lab2D.js?v=3.7';
+import Quiz from './views/Quiz.js?v=3.7';
 
 // --- APP SHELL: THE COMPUTATIONAL OBSERVATORY ---
 const Reset = () => {
@@ -113,6 +114,8 @@ const Reset = () => {
         ActiveComponent = Playground;
     } else if (loc === '/2d') {
         ActiveComponent = Lab2D;
+    } else if (loc === '/quiz') {
+        ActiveComponent = Quiz;
     } else {
         ActiveComponent = () => html`
             <div style=${{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
@@ -175,6 +178,7 @@ const Reset = () => {
                     <a href="#/" style=${getLinkStyle('/')}>Abstract</a>
                     <a href="#/playground" style=${getLinkStyle('/playground')}>3D Lab</a>
                     <a href="#/2d" style=${getLinkStyle('/2d')}>2D Studio</a>
+                    <a href="#/quiz" style=${getLinkStyle('/quiz')}>Quiz Mode</a>
                 </div>
             </nav>
 
