@@ -4,42 +4,76 @@ import Button from '../components/UI/Button.js';
 import { CheckCircle, XCircle, Award, ArrowRight, RotateCcw } from 'lucide-react';
 import html from '../htm.js';
 
+// --- VISUAL ASSETS (SVG Components) ---
+const MinimaDiagram = () => html`
+    <svg viewBox="0 0 200 100" style=${{ width: '100%', height: '150px', background: '#f8fafc', borderRadius: '8px', marginBottom: '16px' }}>
+        <path d="M 10 20 Q 50 120 90 40 T 190 20" fill="none" stroke="var(--color-secondary)" strokeWidth="3" />
+        <!-- Points -->
+        <circle cx="90" cy="40" r="6" fill="#ef4444" /> <!-- A: Local Max -->
+        <text x="85" y="30" fontSize="14" fill="#666">A</text>
+
+        <circle cx="50" cy="85" r="6" fill="#10b981" /> <!-- B: Minimum -->
+        <text x="45" y="105" fontSize="14" fill="#666">B</text>
+        
+        <circle cx="150" cy="60" r="6" fill="#3b82f6" /> <!-- C: Slope -->
+        <text x="145" y="80" fontSize="14" fill="#666">C</text>
+    </svg>
+`;
+
+const LearningRateDiagram = () => html`
+    <svg viewBox="0 0 200 100" style=${{ width: '100%', height: '150px', background: '#f8fafc', borderRadius: '8px', marginBottom: '16px' }}>
+        <path d="M 10 90 Q 100 90 190 10" fill="none" stroke="#ddd" strokeWidth="2" strokeDasharray="4" />
+        <!-- Hill -->
+        <path d="M 20 80 L 180 20" fill="none" stroke="var(--color-primary)" strokeWidth="2" />
+        
+        <!-- Big Step -->
+        <line x1="40" y1="70" x2="160" y2="25" stroke="#ef4444" strokeWidth="4" marker-end="url(#arrowhead)" />
+        <text x="80" y="40" fontSize="12" fill="#ef4444">Arrow A (Big Jump)</text>
+
+        <!-- Small Step -->
+        <line x1="40" y1="75" x2="60" y2="67" stroke="#10b981" strokeWidth="4" />
+        <text x="35" y="90" fontSize="12" fill="#10b981">Arrow B (Small Step)</text>
+    </svg>
+`;
+
 const questions = [
     {
         id: 1,
-        text: "What does the 'Gradient' vector represent in optimization?",
+        text: "Which labelled point represents a 'Local Minimum'?",
+        visual: MinimaDiagram,
         options: [
-            "The direction of steepest descent (downhill).",
-            "The direction of steepest ascent (uphill).",
-            "The current value of the loss function.",
-            "The shortest path to the global minimum."
+            "Point A (The Peak)",
+            "Point B (The Valley Bottom)",
+            "Point C (The Slope)",
+            "None of the above"
         ],
-        correct: 1, // 0-indexed
-        explanation: "Correct! The gradient points in the direction of steepest increase. We subtract it (Go opposite) to minimize loss."
+        correct: 1, // B
+        explanation: "Correct! The bottom of the valley (B) is where the slope is zero and the function value is lowest in that neighborhood."
     },
     {
         id: 2,
-        text: "If the Learning Rate (α) is set too high, what is the likely outcome?",
+        text: "Which arrow represents a High Learning Rate?",
+        visual: LearningRateDiagram,
         options: [
-            "The model will converge very slowly.",
-            "The algorithm may overshoot the minimum and diverge.",
-            "The loss function will become convex.",
-            "The computation time will decrease linearly."
+            "Arrow A (The Red Long Jump)",
+            "Arrow B (The Green Short Step)",
+            "Both represent the same rate",
+            "Neither"
         ],
-        correct: 1,
-        explanation: "Exactly. A large step size can cause the optimizer to bounce across the valley or spiral out of control."
+        correct: 0,
+        explanation: "Yes! A high learning rate takes huge steps. While faster, it risks 'overshooting' the goal, as shown by Arrow A flying past the target."
     },
     {
         id: 3,
-        text: "What is a 'Local Minimum'?",
+        text: "In the 2D Studio, what defines the 'Loss'?",
         options: [
-            "The lowest point in the entire landscape.",
-            "A point lower than its immediate neighbors, but not necessarily the lowest overall.",
-            "The starting point of the descent.",
-            "A point where the gradient is infinite."
+            "The distance between the regression line and the data points.",
+            "The steepness of the gradient.",
+            "The speed of the animation.",
+            "The number of iterations."
         ],
-        correct: 1,
-        explanation: "Right. In complex landscapes, gradient descent can get 'stuck' in these valleys, missing the true global best solution."
+        correct: 0,
+        explanation: "Precisely. The 'Loss' (or MSE) measures the error: how far off our prediction line is from the actual data."
     }
 ];
 
@@ -75,25 +109,27 @@ const Quiz = () => {
 
     // --- STYLES ---
     const layoutStyle = {
-        padding: '40px',
-        height: '100%',
+        padding: '24px',
+        minHeight: 'calc(100vh - 64px)',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        background: 'var(--color-bg)'
+        background: 'var(--color-bg)',
+        overflowY: 'auto'
     };
 
     const cardStyle = {
         maxWidth: '600px',
         width: '100%',
-        padding: '32px'
+        padding: '32px',
+        margin: '20px'
     };
 
     const headerStyle = {
         fontFamily: 'var(--font-serif)',
         color: 'var(--color-primary)',
         marginTop: 0,
-        marginBottom: '24px',
+        marginBottom: '16px',
         textAlign: 'center'
     };
 
@@ -121,7 +157,8 @@ const Quiz = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        fontWeight: 500
+        fontWeight: 500,
+        color: 'var(--color-text)'
     });
 
     const feedbackStyle = {
@@ -158,10 +195,14 @@ const Quiz = () => {
         `;
     }
 
+    const VisualComponent = questions[current].visual;
+
     return html`
         <div style=${layoutStyle}>
             <${GlassCard} style=${cardStyle}>
                 <div style=${progressStyle}>Question ${current + 1} of ${questions.length}</div>
+                
+                ${VisualComponent && html`<${VisualComponent} />`}
                 
                 <h2 style=${headerStyle}>${questions[current].text}</h2>
 
