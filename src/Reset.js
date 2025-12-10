@@ -19,10 +19,10 @@ const useHashLocation = () => {
     return [loc, navigate];
 };
 
-// --- Re-integrating Components with Cache Busting v=3.5 ---
-import Landing from './views/Landing.js?v=3.5';
-import Playground from './views/Playground.js?v=3.5';
-import Lab2D from './views/Lab2D.js?v=3.5';
+// --- Re-integrating Components with Cache Busting v=3.6 ---
+import Landing from './views/Landing.js?v=3.6';
+import Playground from './views/Playground.js?v=3.6';
+import Lab2D from './views/Lab2D.js?v=3.6';
 
 // --- APP SHELL: THE COMPUTATIONAL OBSERVATORY ---
 const Reset = () => {
@@ -102,6 +102,28 @@ const Reset = () => {
         overflow: 'hidden' // Internal scrolling handled by views
     };
 
+    // --- MANUAL ROUTING LOGIC ---
+    // We bypass wouter's Switch/Route matching to guarantee rendering
+    const [loc] = useHashLocation();
+
+    let ActiveComponent;
+    if (loc === '/' || loc === '') {
+        ActiveComponent = Landing;
+    } else if (loc === '/playground') {
+        ActiveComponent = Playground;
+    } else if (loc === '/2d') {
+        ActiveComponent = Lab2D;
+    } else {
+        ActiveComponent = () => html`
+            <div style=${{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
+                <h1 style=${{ fontFamily: "'Lora', serif", color: theme.secondary }}>404</h1>
+                <p>Path: ${loc}</p>
+                <p>Observation point not found.</p>
+                <a href="#/" style=${{ color: theme.primary, marginTop: '1rem' }}>Return to Abstract</a>
+            </div>
+        `;
+    }
+
     // --- RENDER ---
     return html`
     <${Router} hook=${useHashLocation}>
@@ -158,18 +180,7 @@ const Reset = () => {
 
             <!-- Main Dashboard Area -->
             <div style=${contentStyle}>
-                <${Switch}>
-                    <${Route} path="/" component=${Landing} />
-                    <${Route} path="/playground" component=${Playground} />
-                    <${Route} path="/2d" component=${Lab2D} />
-                    <${Route}>
-                        <div style=${{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
-                            <h1 style=${{ fontFamily: "'Lora', serif", color: theme.secondary }}>404</h1>
-                            <p>Observation point not found.</p>
-                            <a href="#/" style=${{ color: theme.primary, marginTop: '1rem' }}>Return to Abstract</a>
-                        </div>
-                    <//>
-                <//>
+                <${ActiveComponent} />
             </div>
 
         </div>
