@@ -1,5 +1,5 @@
 import html from './htm.js';
-import Landing from './views/Landing.js';
+import Landing from './views/Landing.js?v=205';
 
 // Minimal App Component
 // We are temporarily removing the Router to ensure the basic rendering works.

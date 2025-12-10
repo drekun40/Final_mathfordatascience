@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import html from './htm.js';
-import App from './App.js';
+import App from './App.js?v=205';
 
 const root = createRoot(document.getElementById('root'));
 console.log("Mercyhurst App v2.0.3 - Button Fix Applied");
