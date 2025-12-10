@@ -3,11 +3,11 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { motion } from 'framer-motion';
-import GlassCard from '../components/UI/GlassCard.js';
 import Button from '../components/UI/Button.js';
 import Slider from '../components/UI/Slider.js';
 import { Play, Pause, RotateCcw, ArrowLeft } from 'lucide-react';
 import { useLocation } from 'wouter';
+import html from '../htm.js';
 
 const f = (x, z) => (x * x + z * z) * 0.1;
 const df = (x, z) => ({ dx: 0.2 * x, dz: 0.2 * z });
@@ -28,36 +28,36 @@ const Surface = () => {
         return geo;
     }, []);
 
-    return (
-        <group rotation={[-Math.PI / 2, 0, 0]}>
-            <mesh ref={meshRef} geometry={geometry}>
+    return html`
+        <group rotation=${[-Math.PI / 2, 0, 0]}>
+            <mesh ref=${meshRef} geometry=${geometry}>
                 <meshStandardMaterial
                     color="#f8fafc"
-                    side={THREE.DoubleSide}
-                    roughness={0.8}
-                    metalness={0.1}
+                    side=${THREE.DoubleSide}
+                    roughness=${0.8}
+                    metalness=${0.1}
                 />
             </mesh>
-            <mesh geometry={geometry}>
-                <meshBasicMaterial color="#94a3b8" wireframe={true} transparent opacity={0.3} />
+            <mesh geometry=${geometry}>
+                <meshBasicMaterial color="#004E42" wireframe=${true} transparent opacity=${0.2} />
             </mesh>
         </group>
-    );
+    `;
 };
 
 const Marker = ({ position }) => {
-    return (
-        <mesh position={[position.x, position.y + 0.5, position.z]}>
-            <sphereGeometry args={[0.5, 32, 32]} />
+    return html`
+        <mesh position=${[position.x, position.y + 0.5, position.z]}>
+            <sphereGeometry args=${[0.5, 32, 32]} />
             <meshStandardMaterial color="#dc2626" />
         </mesh>
-    );
+    `;
 };
 
 const Path = ({ points }) => {
     if (points.length < 2) return null;
     const vertexPoints = points.map(p => new THREE.Vector3(p.x, p.y + 0.1, p.z));
-    return <Line points={vertexPoints} color="#2563eb" lineWidth={3} />;
+    return html`<${Line} points=${vertexPoints} color="#2563eb" lineWidth=${3} />`;
 };
 
 const Playground = () => {
@@ -95,94 +95,94 @@ const Playground = () => {
         setIsAnimating(false);
     };
 
-    return (
-        <div style={{ width: '100%', height: '100%', position: 'relative', display: 'flex' }}>
+    return html`
+        <div style=${{ width: '100%', height: '100%', position: 'relative', display: 'flex' }}>
 
-            {/* Sidebar Controls (Academic style: Left Panel) */}
-            <div style={{
-                width: '320px',
-                background: '#fff',
-                borderRight: '1px solid var(--color-border)',
-                padding: '20px',
-                zIndex: 10,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '20px'
-            }}>
+            <!-- Sidebar Controls -->
+            <div style=${{
+            width: '320px',
+            background: '#fff',
+            borderRight: '1px solid var(--color-border)',
+            padding: '20px',
+            zIndex: 10,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '20px'
+        }}>
                 <div>
-                    <h3 style={{ fontFamily: 'var(--font-serif)', marginTop: 0 }}>Simulation Parameters</h3>
-                    <p style={{ fontSize: '0.85rem', color: 'var(--color-text-dim)' }}>
+                    <h3 style=${{ fontFamily: 'var(--font-serif)', marginTop: 0 }}>Simulation Parameters</h3>
+                    <p style=${{ fontSize: '0.85rem', color: 'var(--color-text-dim)' }}>
                         Adjust the hyperparameters to observe convergence behavior.
                     </p>
                 </div>
 
-                <div style={{ padding: '20px', background: '#f8fafc', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                    <Slider
+                <div style=${{ padding: '20px', background: '#f8fafc', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+                    <${Slider}
                         label="Learning Rate (α)"
-                        value={lr}
-                        min={0.01}
-                        max={1.5}
-                        step={0.01}
-                        onChange={setLr}
-                        formatValue={v => v.toFixed(2)}
+                        value=${lr}
+                        min=${0.01}
+                        max=${1.5}
+                        step=${0.01}
+                        onChange=${setLr}
+                        formatValue=${v => v.toFixed(2)}
                     />
                 </div>
 
-                <div style={{ display: 'flex', gap: 10 }}>
-                    <Button
-                        onClick={() => setIsAnimating(!isAnimating)}
-                        variant={isAnimating ? 'secondary' : 'primary'}
-                        icon={isAnimating ? Pause : Play}
-                        style={{ flex: 1, justifyContent: 'center' }}
+                <div style=${{ display: 'flex', gap: 10 }}>
+                    <${Button}
+                        onClick=${() => setIsAnimating(!isAnimating)}
+                        variant=${isAnimating ? 'secondary' : 'primary'}
+                        icon=${isAnimating ? Pause : Play}
+                        style=${{ flex: 1, justifyContent: 'center' }}
                     >
-                        {isAnimating ? 'Pause' : 'Start'}
-                    </Button>
-                    <Button
-                        onClick={reset}
+                        ${isAnimating ? 'Pause' : 'Start'}
+                    <//>
+                    <${Button}
+                        onClick=${reset}
                         variant="secondary"
-                        icon={RotateCcw}
+                        icon=${RotateCcw}
                     />
                 </div>
 
-                {/* Math Stats Box */}
-                <div style={{ marginTop: 'auto', padding: '15px', background: '#f1f5f9', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '0.8rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+                <!-- Math Stats Box -->
+                <div style=${{ marginTop: 'auto', padding: '15px', background: '#f1f5f9', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '0.8rem' }}>
+                    <div style=${{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
                         <span>Loss (J):</span>
-                        <strong>{points[points.length - 1].y.toFixed(6)}</strong>
+                        <strong>${points[points.length - 1].y.toFixed(6)}</strong>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div style=${{ display: 'flex', justifyContent: 'space-between' }}>
                         <span>Steps:</span>
-                        <strong>{points.length - 1}</strong>
+                        <strong>${points.length - 1}</strong>
                     </div>
                 </div>
             </div>
 
-            {/* Main Canvas */}
-            <div style={{ flex: 1, position: 'relative', background: '#fff' }}>
-                <Canvas camera={{ position: [20, 15, 20], fov: 35 }}>
-                    <ambientLight intensity={0.8} />
-                    <directionalLight position={[10, 20, 10]} intensity={1.5} castShadow />
-                    <Surface />
-                    <Marker position={points[points.length - 1]} />
-                    <Path points={points} />
-                    <OrbitControls makeDefault />
-                    <gridHelper args={[40, 40, '#e2e8f0', '#f1f5f9']} position={[0, -5, 0]} />
-                    <axesHelper args={[5]} />
-                </Canvas>
+            <!-- Main Canvas -->
+            <div style=${{ flex: 1, position: 'relative', background: '#fff' }}>
+                <${Canvas} camera=${{ position: [20, 15, 20], fov: 35 }}>
+                    <ambientLight intensity=${0.8} />
+                    <directionalLight position=${[10, 20, 10]} intensity=${1.5} castShadow />
+                    <${Surface} />
+                    <${Marker} position=${points[points.length - 1]} />
+                    <${Path} points=${points} />
+                    <${OrbitControls} makeDefault />
+                    <gridHelper args=${[40, 40, '#e2e8f0', '#f1f5f9']} position=${[0, -5, 0]} />
+                    <axesHelper args=${[5]} />
+                <//>
 
-                {/* Legend overlay */}
-                <div style={{ position: 'absolute', bottom: 20, right: 20, background: 'rgba(255,255,255,0.9)', padding: '10px', borderRadius: '4px', border: '1px solid #e2e8f0', fontSize: '0.8rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 5 }}>
-                        <div style={{ width: 10, height: 10, background: '#dc2626', borderRadius: '50%' }}></div> Current Position
+                <!-- Legend overlay -->
+                <div style=${{ position: 'absolute', bottom: 20, right: 20, background: 'rgba(255,255,255,0.9)', padding: '10px', borderRadius: '4px', border: '1px solid #e2e8f0', fontSize: '0.8rem' }}>
+                    <div style=${{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 5 }}>
+                        <div style=${{ width: 10, height: 10, background: '#dc2626', borderRadius: '50%' }}></div> Current Position
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                        <div style={{ width: 20, height: 2, background: '#2563eb' }}></div> Descent Path
+                    <div style=${{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                        <div style=${{ width: 20, height: 2, background: '#2563eb' }}></div> Descent Path
                     </div>
                 </div>
             </div>
 
         </div>
-    );
+    `;
 };
 
 export default Playground;
