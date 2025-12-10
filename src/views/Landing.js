@@ -3,7 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Sphere } from '@react-three/drei';
 import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
-import Button from '../components/UI/Button.js?v=206';
+import Button from '../components/UI/Button.js?v=3.1';
 import { ArrowRight } from 'lucide-react';
 import html from '../htm.js';
 

@@ -1,100 +1,95 @@
+import { Router, Route, Switch } from 'wouter';
 import html from './htm.js';
 
-// --- Single File "Golden Spike" Implementation ---
-// This file is self-contained. It defines its own styles and logic 
-// to ensure it works 100% regardless of other file states.
+// --- Re-integrating Components with Cache Busting v=3.1 ---
+import Landing from './views/Landing.js?v=3.1';
+import Playground from './views/Playground.js?v=3.1';
+import Lab2D from './views/Lab2D.js?v=3.1';
 
+// --- NEW APP SHELL (formerly Reset.js) ---
 const Reset = () => {
-
-    // --- DESIGN THEME (Mercyhurst) ---
-    const theme = {
-        primary: '#004E42', // Mercyhurst Green
-        secondary: '#002F6C', // Mercyhurst Navy
-        bg: '#f5f7fa',
-        text: '#1a1a1a',
-        surface: '#ffffff',
-        border: '#e6e6e6'
-    };
 
     // --- STYLES ---
     const containerStyle = {
         width: '100%',
         height: '100vh',
-        background: theme.bg,
-        color: theme.text,
+        background: 'var(--color-bg)',
+        color: 'var(--color-text)',
         fontFamily: "'Inter', sans-serif",
         display: 'flex',
         flexDirection: 'column'
     };
 
-    const headerStyle = {
-        background: theme.surface,
-        borderBottom: `1px solid ${theme.border}`,
+    const navStyle = {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        zIndex: 100,
+        background: 'var(--color-surface)',
+        borderBottom: '1px solid var(--color-border)',
         padding: '15px 40px',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        boxSizing: 'border-box'
     };
 
     const logoStyle = {
         fontFamily: "'Lora', serif",
         fontWeight: 600,
-        fontSize: '1.4rem',
-        color: theme.primary
+        fontSize: '1.2rem',
+        color: 'var(--color-primary)'
     };
 
-    const mainStyle = {
-        flex: 1,
+    const navLinksStyle = {
         display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '20px'
+        gap: '30px'
     };
 
-    const cardStyle = {
-        background: theme.surface,
-        padding: '40px',
-        borderRadius: '12px',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-        maxWidth: '500px',
-        textAlign: 'center'
+    const linkStyle = {
+        color: 'var(--color-text)',
+        textDecoration: 'none',
+        fontWeight: 500,
+        fontSize: '0.9rem'
     };
 
-    const buttonStyle = {
-        background: theme.primary,
-        color: 'white',
-        border: 'none',
-        padding: '12px 24px',
-        borderRadius: '6px',
-        fontSize: '1rem',
-        cursor: 'pointer',
-        marginTop: '20px',
-        fontWeight: 500
+    const contentStyle = {
+        paddingTop: '70px',
+        height: '100%',
+        boxSizing: 'border-box'
     };
 
     // --- RENDER ---
     return html`
+    <${Router}>
         <div style=${containerStyle}>
-            <header style=${headerStyle}>
+            
+            <nav style=${navStyle}>
                 <div style=${logoStyle}>Mercyhurst University</div>
-                <div style=${{ fontSize: '0.9rem', color: '#666' }}>Gradient Descent Explorer</div>
-            </header>
-
-            <main style=${mainStyle}>
-                <div style=${cardStyle}>
-                    <h1 style=${{ marginTop: 0, color: theme.secondary }}>System Reset Complete</h1>
-                    <p style=${{ lineHeight: 1.6, color: '#4b5563' }}>
-                        The application has been successfully reset to a clean, stable baseline.
-                        We are ready to rebuild the features in a modular, easy-to-edit structure.
-                    </p>
-                    <button style=${buttonStyle} onClick=${() => alert("System Active!")}>
-                        Verify Interaction
-                    </button>
-                    <div style=${{ marginTop: 20, fontSize: '0.8rem', color: '#9ca3af' }}>v3.0.0 - Golden Spike</div>
+                <div style=${navLinksStyle}>
+                    <a href="/" style=${linkStyle}>Home</a>
+                    <a href="/playground" style=${linkStyle}>3D Simulation</a>
+                    <a href="/2d" style=${linkStyle}>2D Analysis</a>
                 </div>
-            </main>
+            </nav>
+
+            <div style=${contentStyle}>
+                <${Switch}>
+                    <${Route} path="/" component=${Landing} />
+                    <${Route} path="/playground" component=${Playground} />
+                    <${Route} path="/2d" component=${Lab2D} />
+                    <${Route}>
+                        <div style=${{ padding: 50, textAlign: 'center' }}>
+                            <h1>404 - Page Not Found</h1>
+                            <a href="/">Go Home</a>
+                        </div>
+                    <//>
+                <//>
+            </div>
+
         </div>
+    <//>
     `;
 };
 
