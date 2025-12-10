@@ -120,4 +120,4 @@ const Quiz = () => {
     );
 };
 
-export default Quiz;
+window.Quiz = Quiz;

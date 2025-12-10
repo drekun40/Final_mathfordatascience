@@ -238,4 +238,4 @@ const Viz3D = () => {
     );
 };
 
-export default Viz3D;
+window.Viz3D = Viz3D;

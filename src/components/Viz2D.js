@@ -177,4 +177,4 @@ const Viz2D = () => {
     );
 };
 
-export default Viz2D;
+window.Viz2D = Viz2D;

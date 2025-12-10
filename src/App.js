@@ -1,10 +1,10 @@
-// Import components
-import Introduction from './components/Introduction.js';
-import Viz2D from './components/Viz2D.js';
-import Viz3D from './components/Viz3D.js';
-import Quiz from './components/Quiz.js';
-
 const App = () => {
+    // Access global components
+    const Introduction = window.Introduction;
+    const Viz2D = window.Viz2D;
+    const Viz3D = window.Viz3D;
+    const Quiz = window.Quiz;
+
     const [currentSection, setCurrentSection] = React.useState('intro');
 
     const renderSection = () => {
@@ -93,4 +93,4 @@ const App = () => {
     );
 };
 
-export default App;
+window.App = App;

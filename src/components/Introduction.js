@@ -71,4 +71,4 @@ const Introduction = () => {
     );
 };
 
-export default Introduction;
+window.Introduction = Introduction;
