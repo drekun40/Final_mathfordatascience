@@ -13,6 +13,21 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
 
+    <!-- Error Catching (Crucial for debugging "Stuck Loading") -->
+    <script>
+        window.onerror = function (msg, url, line, col, error) {
+            document.getElementById('root').innerHTML = `
+                <div style="padding: 20px; color: #7f1d1d; background: #fef2f2; border: 1px solid #ef4444; font-family: monospace; margin: 20px; border-radius: 8px;">
+                    <h3 style="margin-top:0">Startup Error</h3>
+                    <p><strong>${msg}</strong></p>
+                    <p>${url}:${line}</p>
+                    <p>Check console (F12) for details.</p>
+                </div>
+            `;
+            return false;
+        };
+    </script>
+
     <!-- ES Module Shims (for wider browser support) -->
     <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
 
@@ -35,36 +50,36 @@
     </script>
 
     <style>
-        /* === GLOBAL VARIABLES (ACADEMIC DESIGN SYSTEM) === */
+        /* === MERCYHURST UNIVERSITY DESIGN SYSTEM === */
         :root {
-            /* Palette: Academic Paper */
-            --color-bg: #f9fafb;
-            /* Cool Grey 50 */
+            /* Palette: Mercyhurst Official Colors */
+            --color-bg: #f5f7fa;
+            /* Light Grey Background */
             --color-surface: #ffffff;
-            /* White */
-            --color-border: #e2e8f0;
-            /* Slate 200 */
+            /* White Cards */
+            --color-border: #e6e6e6;
 
-            /* Palette: Professional Data */
-            --color-primary: #0f172a;
-            /* Slate 900 (Action/Strong) */
-            --color-accent: #2563eb;
-            /* Royal Blue 600 (Highlight) */
-            --color-success: #059669;
-            /* Emerald 600 */
-            --color-text: #1e293b;
-            /* Slate 800 */
-            --color-text-dim: #64748b;
-            /* Slate 500 */
+            /* Brand Colors */
+            --color-primary: #004E42;
+            /* Mercyhurst Green */
+            --color-secondary: #002F6C;
+            /* Mercyhurst Navy Blue */
+            --color-accent: #0F4C81;
+            /* Lighter Blue */
+
+            --color-text: #1a1a1a;
+            /* Almost Black */
+            --color-text-dim: #666666;
+            /* Grey text */
 
             /* Typography */
             --font-sans: 'Inter', sans-serif;
             --font-serif: 'Lora', serif;
             --font-mono: 'JetBrains Mono', monospace;
 
-            /* Effects (Subtle, no glass) */
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            /* Effects */
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         body {
