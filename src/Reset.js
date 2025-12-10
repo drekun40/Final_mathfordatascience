@@ -1,18 +1,28 @@
-import { Router, Route, Switch, useLocationProperty } from 'wouter';
+import { Router, Route, Switch } from 'wouter';
+import { useState, useEffect } from 'react';
 import html from './htm.js';
 
-// --- HASH ROUTING HOOK (Correct logic for GitHub Pages Compatibility) ---
-// This forces wouter to use /#/path instead of /path, which prevents 404s on refresh.
-const navigate = (to) => (window.location.hash = to);
+// --- ROBUST HASH ROUTING HOOK ---
+// Standard implementation listening to hashchange events
 const useHashLocation = () => {
-    const loc = useLocationProperty(() => window.location.hash.replace(/^#/, '') || '/', () => window.location.hash.replace(/^#/, '') || '/');
+    const [loc, setLoc] = useState(window.location.hash.replace(/^#/, '') || '/');
+
+    useEffect(() => {
+        const handler = () => setLoc(window.location.hash.replace(/^#/, '') || '/');
+
+        // Subscribe to hash changes
+        window.addEventListener("hashchange", handler);
+        return () => window.removeEventListener("hashchange", handler);
+    }, []);
+
+    const navigate = (to) => (window.location.hash = to);
     return [loc, navigate];
 };
 
-// --- Re-integrating Components with Cache Busting v=3.3 ---
-import Landing from './views/Landing.js?v=3.3';
-import Playground from './views/Playground.js?v=3.3';
-import Lab2D from './views/Lab2D.js?v=3.3';
+// --- Re-integrating Components with Cache Busting v=3.5 ---
+import Landing from './views/Landing.js?v=3.5';
+import Playground from './views/Playground.js?v=3.5';
+import Lab2D from './views/Lab2D.js?v=3.5';
 
 // --- APP SHELL: THE COMPUTATIONAL OBSERVATORY ---
 const Reset = () => {
@@ -28,10 +38,6 @@ const Reset = () => {
         textDim: '#64748b',
         border: '#e2e8f0'
     };
-
-    // --- GLOBAL STYLES ---
-    // containerStyle is now inlined with CSS variables
-    // navStyle is now inlined with CSS variables
 
     const brandStyle = {
         display: 'flex',
@@ -77,9 +83,11 @@ const Reset = () => {
         display: 'block'
     };
 
-    // Helper to calculate active style (simplified for this shell)
+    // Helper to calculate active style (Updated for Hash Routing)
     const getLinkStyle = (path) => {
-        const isActive = window.location.pathname === path;
+        // We compare against the current hash location roughly
+        const currentHash = window.location.hash.replace(/^#/, '') || '/';
+        const isActive = currentHash === path;
         return {
             ...linkBaseStyle,
             background: isActive ? theme.accent : 'transparent',
@@ -136,15 +144,15 @@ const Reset = () => {
             zIndex: 50,
             flexShrink: 0
         }}>
-                <a href="/" style=${brandStyle}>
+                <a href="#/" style=${brandStyle}>
                     <span style=${logoTextStyle}>Mercyhurst</span>
                     <span style=${subBrandStyle}>Gradient Descent Explorer</span>
                 </a>
                 
                 <div style=${navLinksStyle}>
-                    <a href="/" style=${getLinkStyle('/')}>Abstract</a>
-                    <a href="/playground" style=${getLinkStyle('/playground')}>3D Lab</a>
-                    <a href="/2d" style=${getLinkStyle('/2d')}>2D Studio</a>
+                    <a href="#/" style=${getLinkStyle('/')}>Abstract</a>
+                    <a href="#/playground" style=${getLinkStyle('/playground')}>3D Lab</a>
+                    <a href="#/2d" style=${getLinkStyle('/2d')}>2D Studio</a>
                 </div>
             </nav>
 
@@ -158,7 +166,7 @@ const Reset = () => {
                         <div style=${{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
                             <h1 style=${{ fontFamily: "'Lora', serif", color: theme.secondary }}>404</h1>
                             <p>Observation point not found.</p>
-                            <a href="/" style=${{ color: theme.primary, marginTop: '1rem' }}>Return to Abstract</a>
+                            <a href="#/" style=${{ color: theme.primary, marginTop: '1rem' }}>Return to Abstract</a>
                         </div>
                     <//>
                 <//>
