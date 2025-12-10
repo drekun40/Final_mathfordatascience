@@ -1,63 +1,110 @@
 import { Router, Route, Switch } from 'wouter';
 import html from './htm.js';
 
-// --- Re-integrating Components with Cache Busting v=3.1 ---
-import Landing from './views/Landing.js?v=3.1';
-import Playground from './views/Playground.js?v=3.1';
-import Lab2D from './views/Lab2D.js?v=3.1';
+// --- Re-integrating Components with Cache Busting v=3.2 ---
+import Landing from './views/Landing.js?v=3.2';
+import Playground from './views/Playground.js?v=3.2';
+import Lab2D from './views/Lab2D.js?v=3.2';
 
-// --- NEW APP SHELL (formerly Reset.js) ---
+// --- APP SHELL: THE COMPUTATIONAL OBSERVATORY ---
 const Reset = () => {
 
-    // --- STYLES ---
+    // --- MERCYHURST ACADEMIC PALETTE ---
+    const theme = {
+        primary: '#0B3A2E',   // Heritage Deep Green
+        secondary: '#003057', // Mercyhurst Navy
+        accent: '#7BAF9E',    // Campus Light Green
+        bg: '#F5F6F7',        // Dissertation Gray
+        surface: '#FFFFFF',   // Thesis White
+        text: '#1a1a1a',
+        textDim: '#64748b',
+        border: '#e2e8f0'
+    };
+
+    // --- GLOBAL STYLES ---
     const containerStyle = {
         width: '100%',
         height: '100vh',
-        background: 'var(--color-bg)',
-        color: 'var(--color-text)',
-        fontFamily: "'Inter', sans-serif",
+        background: theme.bg,
+        color: theme.text,
+        fontFamily: "'Inter', system-ui, sans-serif",
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        overflow: 'hidden' // Dashboard feel
     };
 
+    // "Observatory" Header: Dark, Professional, Scientific
     const navStyle = {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        zIndex: 100,
-        background: 'var(--color-surface)',
-        borderBottom: '1px solid var(--color-border)',
-        padding: '15px 40px',
+        height: '64px',
+        background: theme.primary,
+        borderBottom: `1px solid ${theme.secondary}`,
+        padding: '0 24px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        boxSizing: 'border-box'
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        zIndex: 50
     };
 
-    const logoStyle = {
+    const brandStyle = {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        color: 'white',
+        textDecoration: 'none'
+    };
+
+    const logoTextStyle = {
         fontFamily: "'Lora', serif",
         fontWeight: 600,
-        fontSize: '1.2rem',
-        color: 'var(--color-primary)'
+        fontSize: '1.25rem',
+        letterSpacing: '0.02em'
+    };
+
+    const subBrandStyle = {
+        fontFamily: "'Inter', sans-serif",
+        fontWeight: 300,
+        fontSize: '0.9rem',
+        opacity: 0.8,
+        borderLeft: '1px solid rgba(255,255,255,0.3)',
+        paddingLeft: '12px',
+        marginLeft: '4px'
     };
 
     const navLinksStyle = {
         display: 'flex',
-        gap: '30px'
+        gap: '4px',
+        background: 'rgba(0,0,0,0.2)',
+        padding: '4px',
+        borderRadius: '8px'
     };
 
-    const linkStyle = {
-        color: 'var(--color-text)',
+    const linkBaseStyle = {
+        color: 'rgba(255,255,255,0.8)',
         textDecoration: 'none',
         fontWeight: 500,
-        fontSize: '0.9rem'
+        fontSize: '0.85rem',
+        padding: '8px 16px',
+        borderRadius: '6px',
+        transition: 'all 0.2s ease',
+        display: 'block'
+    };
+
+    // Helper to calculate active style (simplified for this shell)
+    const getLinkStyle = (path) => {
+        const isActive = window.location.pathname === path;
+        return {
+            ...linkBaseStyle,
+            background: isActive ? theme.accent : 'transparent',
+            color: isActive ? theme.primary : 'rgba(255,255,255,0.8)',
+            fontWeight: isActive ? 600 : 500
+        };
     };
 
     const contentStyle = {
-        paddingTop: '70px',
-        height: '100%',
-        boxSizing: 'border-box'
+        flex: 1,
+        position: 'relative',
+        overflow: 'hidden' // Internal scrolling handled by views
     };
 
     // --- RENDER ---
@@ -65,24 +112,31 @@ const Reset = () => {
     <${Router}>
         <div style=${containerStyle}>
             
+            <!-- Observatory Header -->
             <nav style=${navStyle}>
-                <div style=${logoStyle}>Mercyhurst University</div>
+                <a href="/" style=${brandStyle}>
+                    <span style=${logoTextStyle}>Mercyhurst</span>
+                    <span style=${subBrandStyle}>Gradient Descent Explorer</span>
+                </a>
+                
                 <div style=${navLinksStyle}>
-                    <a href="/" style=${linkStyle}>Home</a>
-                    <a href="/playground" style=${linkStyle}>3D Simulation</a>
-                    <a href="/2d" style=${linkStyle}>2D Analysis</a>
+                    <a href="/" style=${getLinkStyle('/')}>Abstract</a>
+                    <a href="/playground" style=${getLinkStyle('/playground')}>3D Lab</a>
+                    <a href="/2d" style=${getLinkStyle('/2d')}>2D Studio</a>
                 </div>
             </nav>
 
+            <!-- Main Dashboard Area -->
             <div style=${contentStyle}>
                 <${Switch}>
                     <${Route} path="/" component=${Landing} />
                     <${Route} path="/playground" component=${Playground} />
                     <${Route} path="/2d" component=${Lab2D} />
                     <${Route}>
-                        <div style=${{ padding: 50, textAlign: 'center' }}>
-                            <h1>404 - Page Not Found</h1>
-                            <a href="/">Go Home</a>
+                        <div style=${{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
+                            <h1 style=${{ fontFamily: "'Lora', serif", color: theme.secondary }}>404</h1>
+                            <p>Observation point not found.</p>
+                            <a href="/" style=${{ color: theme.primary, marginTop: '1rem' }}>Return to Abstract</a>
                         </div>
                     <//>
                 <//>
