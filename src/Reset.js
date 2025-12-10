@@ -1,5 +1,13 @@
-import { Router, Route, Switch } from 'wouter';
+import { Router, Route, Switch, useLocationProperty } from 'wouter';
 import html from './htm.js';
+
+// --- HASH ROUTING HOOK (Correct logic for GitHub Pages Compatibility) ---
+// This forces wouter to use /#/path instead of /path, which prevents 404s on refresh.
+const navigate = (to) => (window.location.hash = to);
+const useHashLocation = () => {
+    const loc = useLocationProperty(() => window.location.hash.replace(/^#/, '') || '/', () => window.location.hash.replace(/^#/, '') || '/');
+    return [loc, navigate];
+};
 
 // --- Re-integrating Components with Cache Busting v=3.3 ---
 import Landing from './views/Landing.js?v=3.3';
@@ -88,7 +96,7 @@ const Reset = () => {
 
     // --- RENDER ---
     return html`
-    <${Router}>
+    <${Router} hook=${useHashLocation}>
         <!-- Global CSS Variables Injection -->
         <style>
             :root {

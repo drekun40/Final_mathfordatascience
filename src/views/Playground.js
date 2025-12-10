@@ -5,8 +5,7 @@ import * as THREE from 'three';
 import { motion } from 'framer-motion';
 import Button from '../components/UI/Button.js';
 import Slider from '../components/UI/Slider.js';
-import { Play, Pause, RotateCcw, ArrowLeft } from 'lucide-react';
-import { useLocation } from 'wouter';
+import { Play, Pause, RotateCcw } from 'lucide-react';
 import html from '../htm.js';
 
 const f = (x, z) => (x * x + z * z) * 0.1;
@@ -32,14 +31,14 @@ const Surface = () => {
         <group rotation=${[-Math.PI / 2, 0, 0]}>
             <mesh ref=${meshRef} geometry=${geometry}>
                 <meshStandardMaterial
-                    color="#f8fafc"
+                    color="var(--color-bg)"
                     side=${THREE.DoubleSide}
-                    roughness=${0.8}
-                    metalness=${0.1}
+                    roughness=${0.6}
+                    metalness=${0.2}
                 />
             </mesh>
             <mesh geometry=${geometry}>
-                <meshBasicMaterial color="#004E42" wireframe=${true} transparent opacity=${0.2} />
+                <meshBasicMaterial color="var(--color-primary)" wireframe=${true} transparent opacity=${0.15} />
             </mesh>
         </group>
     `;
@@ -48,8 +47,8 @@ const Surface = () => {
 const Marker = ({ position }) => {
     return html`
         <mesh position=${[position.x, position.y + 0.5, position.z]}>
-            <sphereGeometry args=${[0.5, 32, 32]} />
-            <meshStandardMaterial color="#dc2626" />
+            <sphereGeometry args=${[0.6, 32, 32]} />
+            <meshStandardMaterial color="var(--color-secondary)" roughness=${0.2} metalness=${0.5} />
         </mesh>
     `;
 };
@@ -57,11 +56,10 @@ const Marker = ({ position }) => {
 const Path = ({ points }) => {
     if (points.length < 2) return null;
     const vertexPoints = points.map(p => new THREE.Vector3(p.x, p.y + 0.1, p.z));
-    return html`<${Line} points=${vertexPoints} color="#2563eb" lineWidth=${3} />`;
+    return html`<${Line} points=${vertexPoints} color="var(--color-accent)" lineWidth=${4} />`;
 };
 
 const Playground = () => {
-    const [, setLocation] = useLocation();
     const [lr, setLr] = useState(0.5);
     const [isAnimating, setIsAnimating] = useState(false);
     const [points, setPoints] = useState([{ x: 8, y: f(8, 8), z: 8 }]);
@@ -96,115 +94,96 @@ const Playground = () => {
     };
 
     // --- STYLES ---
-    const containerStyle = { width: '100%', height: '100%', position: 'relative', display: 'flex' };
-    const sidebarStyle = {
-        width: '320px',
-        background: '#fff',
-        borderRight: '1px solid var(--color-border)',
-        padding: '20px',
-        zIndex: 10,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '20px'
+    const layoutStyle = { width: '100%', height: '100%', position: 'relative', display: 'flex', flexDirection: 'column' };
+
+    // Floating Control Panel
+    const controlsStyle = {
+        position: 'absolute',
+        top: 20,
+        right: 20,
+        width: '300px',
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(10px)',
+        padding: '24px',
+        borderRadius: '12px',
+        border: '1px solid var(--color-border)',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+        zIndex: 10
     };
-    const headerStyle = { fontFamily: 'var(--font-serif)', marginTop: 0 };
-    const subHeaderStyle = { fontSize: '0.85rem', color: 'var(--color-text-dim)' };
-    const sliderContainerStyle = { padding: '20px', background: '#f8fafc', borderRadius: '8px', border: '1px solid var(--color-border)' };
-    const buttonGroupStyle = { display: 'flex', gap: 10 };
-    const playBtnStyle = { flex: 1, justifyContent: 'center' };
-    const statsBoxStyle = { marginTop: 'auto', padding: '15px', background: '#f1f5f9', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '0.8rem' };
-    const statItemStyle = { display: 'flex', justifyContent: 'space-between', marginBottom: 5 };
-    const statItemLastStyle = { display: 'flex', justifyContent: 'space-between' };
 
-    const canvasContainerStyle = { flex: 1, position: 'relative', background: '#fff' };
-    const cameraSettings = { position: [20, 15, 20], fov: 35 };
-    const gridHelperArgs = [40, 40, '#e2e8f0', '#f1f5f9'];
-    const gridHelperPos = [0, -5, 0];
-    const axesArgs = [5];
+    const headerStyle = { fontFamily: 'var(--font-serif)', marginTop: 0, color: 'var(--color-primary)' };
+    const labelStyle = { fontSize: '0.85rem', color: 'var(--color-text-dim)', marginBottom: '16px', display: 'block' };
 
-    const legendStyle = { position: 'absolute', bottom: 20, right: 20, background: 'rgba(255,255,255,0.9)', padding: '10px', borderRadius: '4px', border: '1px solid #e2e8f0', fontSize: '0.8rem' };
-    const legendItemMbStyle = { display: 'flex', alignItems: 'center', gap: 5, marginBottom: 5 };
-    const legendItemStyle = { display: 'flex', alignItems: 'center', gap: 5 };
-    const redDotStyle = { width: 10, height: 10, background: '#dc2626', borderRadius: '50%' };
-    const blueLineStyle = { width: 20, height: 2, background: '#2563eb' };
+    const readoutStyle = {
+        marginTop: '20px',
+        padding: '12px',
+        background: 'var(--color-bg)',
+        borderRadius: '6px',
+        fontFamily: 'var(--font-mono)',
+        fontSize: '0.9rem',
+        border: '1px solid var(--color-border)'
+    };
+
+    const flexRow = { display: 'flex', justifyContent: 'space-between', marginBottom: '4px' };
+
+    // Dashboard Canvas Area
+    const canvasContainerStyle = { flex: 1, background: '#f1f5f9' };
 
     return html`
-        <div style=${containerStyle}>
+        <div style=${layoutStyle}>
             
-            <!-- Sidebar Controls -->
-            <div style=${sidebarStyle}>
-                <div>
-                     <h3 style=${headerStyle}>Simulation Parameters</h3>
-                     <p style=${subHeaderStyle}>
-                         Adjust the hyperparameters to observe convergence behavior.
-                     </p>
-                </div>
-
-                <div style=${sliderContainerStyle}>
-                    <${Slider} 
-                        label="Learning Rate (α)" 
-                        value=${lr} 
-                        min=${0.01} 
-                        max=${1.5} 
-                        step=${0.01} 
-                        onChange=${setLr} 
-                        formatValue=${v => v.toFixed(2)}
-                    />
-                </div>
-
-                <div style=${buttonGroupStyle}>
-                    <${Button} 
-                        onClick=${() => setIsAnimating(!isAnimating)}
-                        variant=${isAnimating ? 'secondary' : 'primary'}
-                        icon=${isAnimating ? Pause : Play}
-                        style=${playBtnStyle}
-                    >
-                        ${isAnimating ? 'Pause' : 'Start'}
-                    <//>
-                    <${Button} 
-                        onClick=${reset}
-                        variant="secondary"
-                        icon=${RotateCcw}
-                    />
-                </div>
-
-                <!-- Math Stats Box -->
-                <div style=${statsBoxStyle}>
-                    <div style=${statItemStyle}>
-                        <span>Loss (J):</span>
-                        <strong>${points[points.length - 1].y.toFixed(6)}</strong>
-                    </div>
-                    <div style=${statItemLastStyle}>
-                        <span>Steps:</span>
-                        <strong>${points.length - 1}</strong>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Main Canvas -->
+            <!-- Main Visualization -->
             <div style=${canvasContainerStyle}>
-                <${Canvas} camera=${cameraSettings}>
+                <${Canvas} camera=${{ position: [20, 15, 20], fov: 35 }}>
                     <ambientLight intensity=${0.8} />
                     <directionalLight position=${[10, 20, 10]} intensity=${1.5} castShadow />
                     <${Surface} />
                     <${Marker} position=${points[points.length - 1]} />
                     <${Path} points=${points} />
                     <${OrbitControls} makeDefault />
-                    <gridHelper args=${gridHelperArgs} position=${gridHelperPos} />
-                    <axesHelper args=${axesArgs} />
+                    <gridHelper args=${[40, 40, '#cbd5e1', '#e2e8f0']} position=${[0, -5, 0]} />
                 <//>
-                
-                <!-- Legend overlay -->
-                <div style=${legendStyle}>
-                    <div style=${legendItemMbStyle}>
-                        <div style=${redDotStyle}></div> Current Position
+            </div>
+
+            <!-- Floating Controls (Observatory Style) -->
+            <div style=${controlsStyle}>
+                <h3 style=${headerStyle}>Experiment Controls</h3>
+                <span style=${labelStyle}>Adjust parameters to observe convergence.</span>
+
+                <${Slider} 
+                    label="Learning Rate (α)" 
+                    value=${lr} 
+                    min=${0.01} 
+                    max=${1.5} 
+                    step=${0.01} 
+                    onChange=${setLr} 
+                    formatValue=${v => v.toFixed(2)}
+                />
+
+                <div style=${{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                    <${Button} 
+                        onClick=${() => setIsAnimating(!isAnimating)}
+                        variant=${isAnimating ? 'secondary' : 'primary'}
+                        icon=${isAnimating ? Pause : Play}
+                        style=${{ flex: 1 }}
+                    >
+                        ${isAnimating ? 'Pause' : 'Start'}
+                    <//>
+                    <${Button} onClick=${reset} variant="secondary" icon=${RotateCcw} />
+                </div>
+
+                <!-- Live Telemetry -->
+                <div style=${readoutStyle}>
+                    <div style=${flexRow}>
+                        <span>Loss (J):</span>
+                        <strong style=${{ color: 'var(--color-secondary)' }}>${points[points.length - 1].y.toFixed(5)}</strong>
                     </div>
-                    <div style=${legendItemStyle}>
-                        <div style=${blueLineStyle}></div> Descent Path
+                    <div style=${flexRow}>
+                        <span>Steps:</span>
+                        <strong>${points.length - 1}</strong>
                     </div>
                 </div>
             </div>
-
         </div>
     `;
 };
