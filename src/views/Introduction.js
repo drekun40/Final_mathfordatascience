@@ -7,37 +7,37 @@ import html from '../htm.js';
 const Introduction = () => {
 
     // --- STYLES ---
-    const outerStyle = {
+    // Matches Quiz.js convention, but allows content to flow since Intro is longer
+    const pageStyle = {
         width: '100%',
-        height: '100%',
-        overflowY: 'auto',
-        background: 'var(--color-bg)'
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '32px 16px',
+        minHeight: '100%' // Ensure it takes at least full height
     };
 
-    const innerStyle = {
-        padding: '24px 20px',
-        maxWidth: '1000px', // Matches standard max-width
-        margin: '0 auto',
-        minHeight: '100%'
+    const contentContainer = {
+        width: '100%',
+        maxWidth: '900px', // Consistent width with Quiz
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '40px'
     };
 
     const headerStyle = {
         fontSize: '2.5rem',
         fontFamily: 'var(--font-serif)',
         color: 'var(--color-primary)',
-        marginBottom: '10px',
+        marginBottom: '16px',
         borderBottom: '2px solid var(--color-accent)',
-        paddingBottom: '20px'
-    };
-
-    const sectionStyle = {
-        marginTop: '40px',
-        marginBottom: '40px'
+        paddingBottom: '24px',
+        textAlign: 'center'
     };
 
     const cardGridStyle = {
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
         gap: '24px',
         marginTop: '24px'
     };
@@ -63,71 +63,81 @@ const Introduction = () => {
 
     return html`
         <div style=${pageStyle}>
-            <div style=${{ textAlign: 'center', marginBottom: '60px' }}>
-                <h1 style=${headerStyle}>Welcome to Gradient Descent</h1>
-                <p style=${{ fontSize: '1.2rem', color: 'var(--color-text-dim)', lineHeight: 1.6, maxWidth: '800px', margin: '0 auto' }}>
-                    An interactive guide to understanding how machines learn. 
-                    Master the algorithm that powers modern Artificial Intelligence.
-                </p>
-            </div>
+            <div style=${contentContainer}>
+                
+                <!-- Hero Section -->
+                <div style=${{ textAlign: 'center' }}>
+                    <h1 style=${headerStyle}>Welcome to Gradient Descent</h1>
+                    <p style=${{ fontSize: '1.2rem', color: 'var(--color-text-dim)', lineHeight: 1.6, maxWidth: '800px', margin: '0 auto' }}>
+                        An interactive guide to understanding how machines learn. 
+                        Master the algorithm that powers modern Artificial Intelligence.
+                    </p>
+                </div>
 
-            <div style=${sectionStyle}>
-                <h2 style=${{ color: 'var(--color-primary)', fontFamily: 'var(--font-serif)' }}>What is it?</h2>
-                <div style=${cardGridStyle}>
-                    <${GlassCard}>
-                        <div style=${iconBoxStyle}><${Mountain} size=${24} /><//>
-                        <h3 style=${stepTitleStyle}>The Landscape</h3>
-                        <p>Imagine being lost in the mountains in the dark. Your goal is to find the lowest point in the valley (where the "Loss" is zero).</p>
-                    <//>
-                    
-                    <${GlassCard}>
-                        <div style=${iconBoxStyle}><${TrendingDown} size=${24} /><//>
-                        <h3 style=${stepTitleStyle}>The Slope</h3>
-                        <p>You can feels the slope of the ground under your feet. The <strong>Gradient</strong> tells you which way is "uphill".</p>
-                    <//>
+                <!-- Concepts Cards -->
+                <div>
+                    <h2 style=${{ color: 'var(--color-primary)', fontFamily: 'var(--font-serif)', textAlign: 'center', marginBottom: '24px' }}>Core Concepts</h2>
+                    <div style=${cardGridStyle}>
+                        <${GlassCard}>
+                            <div style=${iconBoxStyle}><${Mountain} size=${24} /><//>
+                            <h3 style=${stepTitleStyle}>The Landscape</h3>
+                            <p style=${{ lineHeight: 1.5, color: 'var(--color-text)' }}>Imagine standing on a mountain at night. Your goal is to find the lowest point in the valley (minimize Loss).</p>
+                        <//>
+                        
+                        <${GlassCard}>
+                            <div style=${iconBoxStyle}><${TrendingDown} size=${24} /><//>
+                            <h3 style=${stepTitleStyle}>The Slope</h3>
+                            <p style=${{ lineHeight: 1.5, color: 'var(--color-text)' }}>Feel the steepness under your feet. The <strong>Gradient</strong> tells you which direction is uphill, so you go the other way.</p>
+                        <//>
 
-                    <${GlassCard}>
-                        <div style=${iconBoxStyle}><${Target} size=${24} /><//>
-                        <h3 style=${stepTitleStyle}>The Step</h3>
-                        <p>You take a step <strong>opposite</strong> to the gradient to go downhill. The size of this step is the <strong>Learning Rate</strong>.</p>
+                        <${GlassCard}>
+                            <div style=${iconBoxStyle}><${Target} size=${24} /><//>
+                            <h3 style=${stepTitleStyle}>The Step</h3>
+                            <p style=${{ lineHeight: 1.5, color: 'var(--color-text)' }}>You take a step downhill. The size of this step is the <strong>Learning Rate</strong>—too big, you miss; too small, it takes forever.</p>
+                        <//>
+                    </div>
+                </div>
+
+                <!-- Guide Section -->
+                <div>
+                    <h2 style=${{ color: 'var(--color-primary)', fontFamily: 'var(--font-serif)', textAlign: 'center', marginBottom: '24px' }}>Your Journey</h2>
+                    <${GlassCard} style=${{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '32px' }}>
+                        
+                        <div style=${{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
+                            <div style=${{ background: 'var(--color-accent)', color: 'white', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0, fontSize: '1.1rem' }}>1</div>
+                            <div>
+                                <strong style=${{ display: 'block', marginBottom: '6px', color: 'var(--color-secondary)', fontSize: '1.1rem' }}>Explore in 3D</strong>
+                                <p style=${{ margin: 0, color: 'var(--color-text-dim)', lineHeight: 1.5 }}>Visualize the "Mountain" in 3D space. Adjust parameters to see how the path to the bottom changes.</p>
+                            </div>
+                        </div>
+
+                        <div style=${{ height: '1px', background: '#e2e8f0', margin: '0 10px' }}></div>
+
+                        <div style=${{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
+                            <div style=${{ background: 'var(--color-accent)', color: 'white', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0, fontSize: '1.1rem' }}>2</div>
+                            <div>
+                                <strong style=${{ display: 'block', marginBottom: '6px', color: 'var(--color-secondary)', fontSize: '1.1rem' }}>Analyze in 2D</strong>
+                                <p style=${{ margin: 0, color: 'var(--color-text-dim)', lineHeight: 1.5 }}>Switch to the Contour Map to track the exact path and error values with precision.</p>
+                            </div>
+                        </div>
+
+                        <div style=${{ height: '1px', background: '#e2e8f0', margin: '0 10px' }}></div>
+
+                        <div style=${{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
+                            <div style=${{ background: 'var(--color-accent)', color: 'white', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0, fontSize: '1.1rem' }}>3</div>
+                            <div>
+                                <strong style=${{ display: 'block', marginBottom: '6px', color: 'var(--color-secondary)', fontSize: '1.1rem' }}>Master the Quiz</strong>
+                                <p style=${{ margin: 0, color: 'var(--color-text-dim)', lineHeight: 1.5 }}>Challenge yourself with visual questions to prove your understanding.</p>
+                            </div>
+                        </div>
+
+                        <div style=${{ marginTop: '32px', display: 'flex', justifyContent: 'center' }}>
+                            <a href="#/playground" style=${{ textDecoration: 'none' }}>
+                                <${Button} icon=${ArrowRight} variant="primary" size="large">Begin Observatory<//>
+                            </a>
+                        </div>
                     <//>
                 </div>
-            </div>
-
-            <div style=${sectionStyle}>
-                <h2 style=${{ color: 'var(--color-primary)', fontFamily: 'var(--font-serif)' }}>How to use this Observatory</h2>
-                <${GlassCard} style=${{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    
-                    <div style=${{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-                        <div style=${{ background: 'var(--color-accent)', color: 'white', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 }}>1</div>
-                        <div>
-                            <strong style=${{ display: 'block', marginBottom: '4px', color: 'var(--color-secondary)' }}>Explore the 3D Lab</strong>
-                            <p style=${{ margin: 0, color: 'var(--color-text-dim)' }}>Visualize the "Mountain" in 3D. Play with the controls to see how step size affects the path down.</p>
-                        </div>
-                    </div>
-
-                    <div style=${{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-                        <div style=${{ background: 'var(--color-accent)', color: 'white', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 }}>2</div>
-                        <div>
-                            <strong style=${{ display: 'block', marginBottom: '4px', color: 'var(--color-secondary)' }}>Analyze in 2D Studio</strong>
-                            <p style=${{ margin: 0, color: 'var(--color-text-dim)' }}>See the "Map View" (Contours) and track the exact error curve over time.</p>
-                        </div>
-                    </div>
-
-                    <div style=${{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-                        <div style=${{ background: 'var(--color-accent)', color: 'white', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 }}>3</div>
-                        <div>
-                            <strong style=${{ display: 'block', marginBottom: '4px', color: 'var(--color-secondary)' }}>Test Your Knowledge</strong>
-                            <p style=${{ margin: 0, color: 'var(--color-text-dim)' }}>Head to the Quiz Mode to challenge your understanding of Learning Rates and Local Minima.</p>
-                        </div>
-                    </div>
-
-                    <div style=${{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
-                        <a href="#/playground" style=${{ textDecoration: 'none' }}>
-                            <${Button} icon=${ArrowRight} variant="primary">Start Exploration<//>
-                        </a>
-                    </div>
-                <//>
             </div>
         </div>
     `;
