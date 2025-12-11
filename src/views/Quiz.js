@@ -6,7 +6,7 @@ import html from '../htm.js';
 
 // --- VISUAL ASSETS (SVG Components) ---
 const MinimaDiagram = () => html`
-    <svg viewBox="0 0 400 200" style=${{ width: '100%', height: '160px', background: '#f8fafc', borderRadius: '8px', marginBottom: '16px' }}>
+    <svg viewBox="0 0 400 200" style=${{ width: '100%', height: '140px', background: '#f8fafc', borderRadius: '8px', marginBottom: '16px' }}>
         <path d="M 20 40 Q 100 240 180 80 T 380 40" fill="none" stroke="var(--color-secondary)" strokeWidth="4" />
         <!-- Points -->
         <circle cx="180" cy="80" r="10" fill="#ef4444" stroke="white" strokeWidth="2" /> <!-- A: Local Max -->
@@ -21,7 +21,7 @@ const MinimaDiagram = () => html`
 `;
 
 const LearningRateDiagram = () => html`
-    <svg viewBox="0 0 400 200" style=${{ width: '100%', height: '160px', background: '#f8fafc', borderRadius: '8px', marginBottom: '16px' }}>
+    <svg viewBox="0 0 400 200" style=${{ width: '100%', height: '140px', background: '#f8fafc', borderRadius: '8px', marginBottom: '16px' }}>
         <path d="M 20 180 Q 200 180 380 20" fill="none" stroke="#e2e8f0" strokeWidth="4" strokeDasharray="8" />
         <!-- Hill -->
         <path d="M 40 160 L 360 40" fill="none" stroke="var(--color-primary)" strokeWidth="3" opacity="0.3" />
@@ -37,7 +37,7 @@ const LearningRateDiagram = () => html`
 `;
 
 const SaddlePointDiagram = () => html`
-    <svg viewBox="0 0 400 200" style=${{ width: '100%', height: '160px', background: '#f8fafc', borderRadius: '8px', marginBottom: '16px' }}>
+    <svg viewBox="0 0 400 200" style=${{ width: '100%', height: '140px', background: '#f8fafc', borderRadius: '8px', marginBottom: '16px' }}>
         <!-- Abstract Saddle Representation -->
         <path d="M 50 150 Q 200 50 350 150" fill="none" stroke="var(--color-secondary)" strokeWidth="4" />
         <path d="M 200 50 Q 200 150 200 180" fill="none" stroke="var(--color-accent)" strokeWidth="4" strokeDasharray="4" />
@@ -49,7 +49,7 @@ const SaddlePointDiagram = () => html`
 `;
 
 const DivergenceDiagram = () => html`
-     <svg viewBox="0 0 400 200" style=${{ width: '100%', height: '160px', background: '#f8fafc', borderRadius: '8px', marginBottom: '16px' }}>
+     <svg viewBox="0 0 400 200" style=${{ width: '100%', height: '140px', background: '#f8fafc', borderRadius: '8px', marginBottom: '16px' }}>
         <path d="M 200 180 L 180 140 L 220 100 L 160 40 L 260 0" fill="none" stroke="#ef4444" strokeWidth="3" />
         <circle cx="200" cy="180" r="6" fill="var(--color-primary)" />
         <text x="180" y="195" fontSize="14" fill="#666">Start</text>
@@ -57,88 +57,179 @@ const DivergenceDiagram = () => html`
     </svg>
 `;
 
-// ... (questions array unchanged)
+const questions = [
+    {
+        id: 1,
+        text: "Which labelled point represents a 'Local Minimum'?",
+        visual: MinimaDiagram,
+        options: [
+            "Point A (The Peak)",
+            "Point B (The Valley Bottom)",
+            "Point C (The Slope)",
+            "None of the above"
+        ],
+        correct: 1, // B
+        explanation: "Correct! The bottom of the valley (B) is where the slope is zero and the function value is lowest in that neighborhood."
+    },
+    {
+        id: 2,
+        text: "Which step size represents a very High Learning Rate?",
+        visual: LearningRateDiagram,
+        options: [
+            "Step A (The Giant Leap)",
+            "Step B (The Small Nudge)",
+            "Both are equal",
+            "Impossible to tell"
+        ],
+        correct: 0,
+        explanation: "Yes! Step A is huge. If the Learning Rate is too high, the algorithm jumps straight past the minimum, often making things worse."
+    },
+    {
+        id: 3,
+        text: "What is special about 'Point X' (A Saddle Point)?",
+        visual: SaddlePointDiagram,
+        options: [
+            "It is the global minimum.",
+            "It is the global maximum.",
+            "The slope is zero, but it is neither a min nor a max.",
+            "The gradient is infinite."
+        ],
+        correct: 2,
+        explanation: "Exactly. At a saddle point, the gradient is zero (flat), which can trick the algorithm into thinking it's finished even though it hasn't found the bottom."
+    },
+    {
+        id: 4,
+        text: "What is happening in this divergence graph?",
+        visual: DivergenceDiagram,
+        options: [
+            "The model is learning perfectly.",
+            "The Learning Rate is too high, causing 'Exploding Gradients'.",
+            "The model has found the minimum.",
+            "The data is corrupt."
+        ],
+        correct: 1,
+        explanation: "Correct. The path is oscillating and getting further away from the center. This 'explosion' happens when step sizes are aggressively large."
+    },
+    {
+        id: 5,
+        text: "In the 2D Studio Regression, what are we optimizing?",
+        options: [
+            "The slope (m) and intercept (b) of the line.",
+            "The X and Y values of the data points.",
+            "The color of the line.",
+            "The size of the graph."
+        ],
+        correct: 0,
+        explanation: "Spot on. We tweak the parameters 'm' and 'b' to minimize the Mean Squared Error (Loss) between the line and the points."
+    }
+];
 
-// ...
+const Quiz = () => {
+    const [current, setCurrent] = useState(0);
+    const [score, setScore] = useState(0);
+    const [selected, setSelected] = useState(null);
+    const [isFinished, setIsFinished] = useState(false);
 
-// --- CONSISTENT MERCYHURST LAYOUT (Single Page Fit) ---
-const pageStyle = {
-    width: '100%',
-    height: '100%', // Take full height
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center', // Center vertically
-    padding: '16px' // Minimal outer padding
-};
+    const handleSelect = (idx) => {
+        if (selected !== null) return;
+        setSelected(idx);
+        if (idx === questions[current].correct) {
+            setScore(s => s + 1);
+        }
+    };
 
-const contentContainer = {
-    width: '100%',
-    maxWidth: '900px',
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
-    justifyContent: 'center' // Center content in the limited width
-};
+    const nextQuestion = () => {
+        if (current < questions.length - 1) {
+            setCurrent(c => c + 1);
+            setSelected(null);
+        } else {
+            setIsFinished(true);
+        }
+    };
 
-const cardStyle = {
-    width: '100%',
-    padding: '24px',
-    display: 'flex',
-    flexDirection: 'column',
-    maxHeight: '100%', // Prevent overflow if possible
-    overflowY: 'auto' // Fallback scroll inside card if absolutely needed
-};
+    const reset = () => {
+        setCurrent(0);
+        setScore(0);
+        setSelected(null);
+        setIsFinished(false);
+    };
 
-// Compact Header
-const headerStyle = {
-    fontFamily: 'var(--font-serif)',
-    color: 'var(--color-primary)',
-    marginTop: 0,
-    marginBottom: '16px',
-    textAlign: 'center',
-    fontSize: '1.4rem' // Smaller title
-};
+    // --- CONSISTENT MERCYHURST LAYOUT (Single Page Fit) ---
+    const pageStyle = {
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '16px'
+    };
 
-const subheaderStyle = {
-    textAlign: 'center',
-    color: 'var(--color-text-dim)',
-    marginBottom: '16px',
-    fontFamily: 'var(--font-sans)',
-    fontSize: '0.9rem'
-};
+    const contentContainer = {
+        width: '100%',
+        maxWidth: '900px',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        justifyContent: 'center'
+    };
 
-// 2x2 Grid for Options
-const optionsGridStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', // Adaptive 2-column
-    gap: '12px',
-    marginTop: '8px'
-};
+    const cardStyle = {
+        width: '100%',
+        padding: '24px',
+        display: 'flex',
+        flexDirection: 'column',
+        maxHeight: '100%',
+        overflowY: 'auto'
+    };
 
-const optionStyle = (idx) => ({
-    padding: '16px', // Reduced padding
-    borderRadius: '8px',
-    border: '2px solid',
-    borderColor: selected === null
-        ? 'var(--color-border)'
-        : (idx === questions[current].correct ? '#10b981' : (idx === selected ? '#ef4444' : 'var(--color-border)')),
-    background: selected === null
-        ? 'white'
-        : (idx === questions[current].correct ? '#ecfdf5' : (idx === selected ? '#fef2f2' : 'white')),
-    cursor: selected === null ? 'pointer' : 'default',
-    transition: 'all 0.2s ease',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    fontWeight: 500,
-    fontSize: '0.95rem',
-    color: 'var(--color-text)',
-    minHeight: '60px' // Consistent height
-});
+    const headerStyle = {
+        fontFamily: 'var(--font-serif)',
+        color: 'var(--color-primary)',
+        marginTop: 0,
+        marginBottom: '16px',
+        textAlign: 'center',
+        fontSize: '1.4rem'
+    };
 
-if (isFinished) {
-    return html`
+    const subheaderStyle = {
+        textAlign: 'center',
+        color: 'var(--color-text-dim)',
+        marginBottom: '16px',
+        fontFamily: 'var(--font-sans)',
+        fontSize: '0.9rem'
+    };
+
+    const optionsGridStyle = {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+        gap: '12px',
+        marginTop: '8px'
+    };
+
+    const optionStyle = (idx) => ({
+        padding: '16px',
+        borderRadius: '8px',
+        border: '2px solid',
+        borderColor: selected === null
+            ? 'var(--color-border)'
+            : (idx === questions[current].correct ? '#10b981' : (idx === selected ? '#ef4444' : 'var(--color-border)')),
+        background: selected === null
+            ? 'white'
+            : (idx === questions[current].correct ? '#ecfdf5' : (idx === selected ? '#fef2f2' : 'white')),
+        cursor: selected === null ? 'pointer' : 'default',
+        transition: 'all 0.2s ease',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        fontWeight: 500,
+        fontSize: '0.95rem',
+        color: 'var(--color-text)',
+        minHeight: '60px'
+    });
+
+    if (isFinished) {
+        return html`
             <div style=${pageStyle}>
                 <div style=${contentContainer}>
                     <${GlassCard} style=${{ ...cardStyle, textAlign: 'center', justifyContent: 'center' }}>
@@ -157,14 +248,13 @@ if (isFinished) {
                 </div>
             </div>
         `;
-}
+    }
 
-const VisualComponent = questions[current].visual;
+    const VisualComponent = questions[current].visual;
 
-return html`
+    return html`
         <div style=${pageStyle}>
             <div style=${contentContainer}>
-                <!-- Progress Bar -->
                 <div style=${{ width: '100%', height: '4px', background: '#e2e8f0', borderRadius: '2px', marginBottom: '16px', flexShrink: 0 }}>
                     <div style=${{ width: `${((current + 1) / questions.length) * 100}%`, height: '100%', background: 'var(--color-accent)', borderRadius: '2px', transition: 'width 0.3s ease' }}></div>
                 </div>
@@ -172,27 +262,25 @@ return html`
                 <${GlassCard} style=${cardStyle}>
                     <div style=${subheaderStyle}>Question ${current + 1} of ${questions.length}</div>
                     
-                    <!-- Flexible Visual Container -->
                     ${VisualComponent && html`
                         <div style=${{
-            marginBottom: '16px',
-            padding: '8px',
-            background: 'white',
-            borderRadius: '8px',
-            border: '1px solid var(--color-border)',
-            height: '140px', // Fixed small height
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexShrink: 0 // Don't shrink to 0
-        }}>
+                marginBottom: '16px',
+                padding: '8px',
+                background: 'white',
+                borderRadius: '8px',
+                border: '1px solid var(--color-border)',
+                height: '140px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexShrink: 0
+            }}>
                             <${VisualComponent} />
                         </div>
                     `}
                     
                     <h2 style=${headerStyle}>${questions[current].text}</h2>
 
-                    <!-- Grid Layout for Answers -->
                     <div style=${optionsGridStyle}>
                         ${questions[current].options.map((opt, idx) => html`
                             <div 
