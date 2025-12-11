@@ -193,9 +193,17 @@ const Landing = () => {
                     COORD: 42.12° N, 80.08° W<br/>
                     ESTD: 1926
                 </div>
-                <!-- Version Indicator -->
-                <div style=${{ position: 'absolute', bottom: '10px', right: '10px', color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem' }}>
-                    System v3.20.0 | Mercyhurst University
+                <!-- Version Indicator & Reload Tool -->
+                <div style=${{ position: 'absolute', bottom: '10px', right: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <button 
+                        onclick=${() => window.location.reload(true)}
+                        style=${{ background: 'transparent', border: '1px solid rgba(255,255,255,0.3)', color: 'rgba(255,255,255,0.5)', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem' }}
+                    >
+                        Force Reload
+                    </button>
+                    <div style=${{ color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem' }}>
+                        System v3.21.0
+                    </div>
                 </div>
             </div>
         </div>
