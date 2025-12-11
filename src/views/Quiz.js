@@ -61,20 +61,20 @@ const questions = [
     {
         id: 1,
         text: "Which labelled point represents a 'Local Minimum'?",
-        visual: MinimaDiagram,
+        // visual: REMOVED for simplicity
         options: [
-            "Point A (The Peak)",
-            "Point B (The Valley Bottom)",
-            "Point C (The Slope)",
-            "None of the above"
+            "The highest peak on the graph",
+            "The lowest point in a local valley",
+            "Any point with a steep slope",
+            "A point where the function explodes"
         ],
-        correct: 1, // B
-        explanation: "Correct! The bottom of the valley (B) is where the slope is zero and the function value is lowest in that neighborhood."
+        correct: 1,
+        explanation: "Correct! A Local Minimum is the bottom of a valley where the slope is zero and surrounding points are higher."
     },
     {
         id: 2,
         text: "Which step size represents a very High Learning Rate?",
-        visual: LearningRateDiagram,
+        visual: LearningRateDiagram, // Keeping this as it's visual-dependent
         options: [
             "Step A (The Giant Leap)",
             "Step B (The Small Nudge)",
@@ -82,12 +82,12 @@ const questions = [
             "Impossible to tell"
         ],
         correct: 0,
-        explanation: "Yes! Step A is huge. If the Learning Rate is too high, the algorithm jumps straight past the minimum, often making things worse."
+        explanation: "Yes! Step A is huge. If the Learning Rate is too high, the algorithm jumps straight past the minimum."
     },
     {
         id: 3,
-        text: "What is special about 'Point X' (A Saddle Point)?",
-        visual: SaddlePointDiagram,
+        text: "What is special about a 'Saddle Point'?",
+        // visual: REMOVED
         options: [
             "It is the global minimum.",
             "It is the global maximum.",
@@ -95,32 +95,33 @@ const questions = [
             "The gradient is infinite."
         ],
         correct: 2,
-        explanation: "Exactly. At a saddle point, the gradient is zero (flat), which can trick the algorithm into thinking it's finished even though it hasn't found the bottom."
+        explanation: "Exactly. At a saddle point, the gradient is zero (flat), which can trick the algorithm into thinking it's finished."
     },
     {
         id: 4,
         text: "What is happening in this divergence graph?",
-        visual: DivergenceDiagram,
+        visual: DivergenceDiagram, // Keeping this as it's visual-dependent
         options: [
             "The model is learning perfectly.",
-            "The Learning Rate is too high, causing 'Exploding Gradients'.",
+            "The Learning Rate is too high (Exploding).",
             "The model has found the minimum.",
             "The data is corrupt."
         ],
         correct: 1,
-        explanation: "Correct. The path is oscillating and getting further away from the center. This 'explosion' happens when step sizes are aggressively large."
+        explanation: "Correct. The path is oscillating and getting further away. This 'explosion' happens when step sizes are too large."
     },
     {
         id: 5,
         text: "In the 2D Studio Regression, what are we optimizing?",
+        // Text-only question
         options: [
-            "The slope (m) and intercept (b) of the line.",
-            "The X and Y values of the data points.",
+            "The slope (m) and intercept (b).",
+            "The X and Y values of data points.",
             "The color of the line.",
-            "The size of the graph."
+            "The graph size."
         ],
         correct: 0,
-        explanation: "Spot on. We tweak the parameters 'm' and 'b' to minimize the Mean Squared Error (Loss) between the line and the points."
+        explanation: "Spot on. We tweak 'm' and 'b' to minimize the error between the line and the points."
     }
 ];
 
