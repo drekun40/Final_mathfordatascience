@@ -61,44 +61,98 @@ const DivergenceDiagram = () => html`
 
 // ...
 
-// --- CONSISTENT MERCYHURST LAYOUT (Compacted) ---
-// Note: Scrolling is now handled by Reset.js container
+// --- CONSISTENT MERCYHURST LAYOUT (Single Page Fit) ---
 const pageStyle = {
     width: '100%',
+    height: '100%', // Take full height
     display: 'flex',
-    justifyContent: 'center',
-    padding: '24px 16px'
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center', // Center vertically
+    padding: '16px' // Minimal outer padding
 };
 
 const contentContainer = {
     width: '100%',
-    maxWidth: '800px', // Reduced from 1000px for better vertical fit
+    maxWidth: '900px',
     display: 'flex',
     flexDirection: 'column',
+    height: '100%',
+    justifyContent: 'center' // Center content in the limited width
 };
 
 const cardStyle = {
     width: '100%',
-    padding: '24px', // Reduced from 40px
-    marginTop: '16px'
+    padding: '24px',
+    display: 'flex',
+    flexDirection: 'column',
+    maxHeight: '100%', // Prevent overflow if possible
+    overflowY: 'auto' // Fallback scroll inside card if absolutely needed
 };
 
-// ... (rest of styles)
+// Compact Header
+const headerStyle = {
+    fontFamily: 'var(--font-serif)',
+    color: 'var(--color-primary)',
+    marginTop: 0,
+    marginBottom: '16px',
+    textAlign: 'center',
+    fontSize: '1.4rem' // Smaller title
+};
+
+const subheaderStyle = {
+    textAlign: 'center',
+    color: 'var(--color-text-dim)',
+    marginBottom: '16px',
+    fontFamily: 'var(--font-sans)',
+    fontSize: '0.9rem'
+};
+
+// 2x2 Grid for Options
+const optionsGridStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', // Adaptive 2-column
+    gap: '12px',
+    marginTop: '8px'
+};
+
+const optionStyle = (idx) => ({
+    padding: '16px', // Reduced padding
+    borderRadius: '8px',
+    border: '2px solid',
+    borderColor: selected === null
+        ? 'var(--color-border)'
+        : (idx === questions[current].correct ? '#10b981' : (idx === selected ? '#ef4444' : 'var(--color-border)')),
+    background: selected === null
+        ? 'white'
+        : (idx === questions[current].correct ? '#ecfdf5' : (idx === selected ? '#fef2f2' : 'white')),
+    cursor: selected === null ? 'pointer' : 'default',
+    transition: 'all 0.2s ease',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    fontWeight: 500,
+    fontSize: '0.95rem',
+    color: 'var(--color-text)',
+    minHeight: '60px' // Consistent height
+});
 
 if (isFinished) {
     return html`
             <div style=${pageStyle}>
                 <div style=${contentContainer}>
-                    <${GlassCard} style=${{ ...cardStyle, textAlign: 'center' }}>
-                        <${Award} size=${64} color="var(--color-primary)" style=${{ marginBottom: '24px' }} />
-                        <h2 style=${headerStyle}>Assessment Complete</h2>
-                        <p style=${{ fontSize: '1.5rem', marginBottom: '16px', color: 'var(--color-secondary)', fontWeight: 'bold' }}>
-                            Score: ${score} / ${questions.length}
-                        </p>
-                        <p style=${{ color: 'var(--color-text-dim)', marginBottom: '32px', lineHeight: 1.6 }}>
-                            ${score >= 4 ? "Outstanding!" : "Good practice."}
-                        </p>
-                        <${Button} onClick=${reset} icon=${RotateCcw} size="large">Retake Quiz<//>
+                    <${GlassCard} style=${{ ...cardStyle, textAlign: 'center', justifyContent: 'center' }}>
+                        <div style=${{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
+                            <${Award} size=${64} color="var(--color-primary)" />
+                            <h2 style=${headerStyle}>Assessment Complete</h2>
+                            <p style=${{ fontSize: '1.5rem', color: 'var(--color-secondary)', fontWeight: 'bold', margin: 0 }}>
+                                Score: ${score} / ${questions.length}
+                            </p>
+                            <p style=${{ color: 'var(--color-text-dim)', lineHeight: 1.5, margin: 0 }}>
+                                ${score >= 4 ? "Outstanding work!" : "Good practice."}
+                            </p>
+                            <${Button} onClick=${reset} icon=${RotateCcw} size="large">Retake Quiz<//>
+                        </div>
                     <//>
                 </div>
             </div>
@@ -111,41 +165,58 @@ return html`
         <div style=${pageStyle}>
             <div style=${contentContainer}>
                 <!-- Progress Bar -->
-                <div style=${{ width: '100%', height: '6px', background: '#e2e8f0', borderRadius: '3px', marginBottom: '24px' }}>
-                    <div style=${{ width: `${((current + 1) / questions.length) * 100}%`, height: '100%', background: 'var(--color-accent)', borderRadius: '3px', transition: 'width 0.3s ease' }}></div>
+                <div style=${{ width: '100%', height: '4px', background: '#e2e8f0', borderRadius: '2px', marginBottom: '16px', flexShrink: 0 }}>
+                    <div style=${{ width: `${((current + 1) / questions.length) * 100}%`, height: '100%', background: 'var(--color-accent)', borderRadius: '2px', transition: 'width 0.3s ease' }}></div>
                 </div>
 
                 <${GlassCard} style=${cardStyle}>
                     <div style=${subheaderStyle}>Question ${current + 1} of ${questions.length}</div>
                     
-                    ${VisualComponent && html`<div style=${{ marginBottom: '24px', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid var(--color-border)' }}><${VisualComponent} /></div>`}
+                    <!-- Flexible Visual Container -->
+                    ${VisualComponent && html`
+                        <div style=${{
+            marginBottom: '16px',
+            padding: '8px',
+            background: 'white',
+            borderRadius: '8px',
+            border: '1px solid var(--color-border)',
+            height: '140px', // Fixed small height
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexShrink: 0 // Don't shrink to 0
+        }}>
+                            <${VisualComponent} />
+                        </div>
+                    `}
                     
                     <h2 style=${headerStyle}>${questions[current].text}</h2>
 
-                    <div style=${{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <!-- Grid Layout for Answers -->
+                    <div style=${optionsGridStyle}>
                         ${questions[current].options.map((opt, idx) => html`
                             <div 
                                 key=${idx} 
                                 style=${optionStyle(idx)}
                                 onClick=${() => handleSelect(idx)}
                             >
-                                <span style=${{ marginRight: '10px' }}>${opt}</span>
-                                ${selected !== null && idx === questions[current].correct && html`<${CheckCircle} size=${20} color="#10b981" />`}
-                                ${selected !== null && idx === selected && idx !== questions[current].correct && html`<${XCircle} size=${20} color="#ef4444" />`}
+                                <span style=${{ marginRight: '8px' }}>${opt}</span>
+                                ${selected !== null && idx === questions[current].correct && html`<${CheckCircle} size=${18} color="#10b981" />`}
+                                ${selected !== null && idx === selected && idx !== questions[current].correct && html`<${XCircle} size=${18} color="#ef4444" />`}
                             </div>
                         `)}
                     </div>
 
                     ${selected !== null && html`
-                        <div style=${{ marginTop: '24px', padding: '16px', borderRadius: '8px', background: '#f8fafc', borderLeft: '4px solid var(--color-accent)', animation: 'fadeIn 0.3s ease' }}>
-                            <strong style=${{ fontSize: '1.05rem', color: selected === questions[current].correct ? '#059669' : '#d97706' }}>
+                        <div style=${{ marginTop: '16px', padding: '12px', borderRadius: '8px', background: '#f8fafc', borderLeft: '4px solid var(--color-accent)', animation: 'fadeIn 0.3s ease' }}>
+                            <strong style=${{ fontSize: '0.95rem', color: selected === questions[current].correct ? '#059669' : '#d97706' }}>
                                 ${selected === questions[current].correct ? "Correct!" : "Explanation:"}
                             </strong>
-                            <p style=${{ margin: '8px 0 0 0', color: 'var(--color-text)', lineHeight: 1.5, fontSize: '0.95rem' }}>
+                            <p style=${{ margin: '4px 0 0 0', color: 'var(--color-text)', lineHeight: 1.4, fontSize: '0.9rem' }}>
                                 ${questions[current].explanation}
                             </p>
-                            <div style=${{ marginTop: '16px', display: 'flex', justifyContent: 'flex-end' }}>
-                                <${Button} onClick=${nextQuestion} icon=${ArrowRight} variant="primary">Next<//>
+                            <div style=${{ marginTop: '12px', display: 'flex', justifyContent: 'flex-end' }}>
+                                <${Button} onClick=${nextQuestion} icon=${ArrowRight} variant="primary" size="small">Next<//>
                             </div>
                         </div>
                     `}
