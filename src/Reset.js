@@ -19,12 +19,12 @@ const useHashLocation = () => {
     return [loc, navigate];
 };
 
-// --- Re-integrating Components with Cache Busting v=3.18 ---
-import Landing from './views/Landing.js?v=3.18';
-import Playground from './views/Playground.js?v=3.18';
-import Lab2D from './views/Lab2D.js?v=3.18';
-import Quiz from './views/Quiz.js?v=3.18';
-import Introduction from './views/Introduction.js?v=3.18';
+// --- Re-integrating Components with Cache Busting v=3.19 ---
+import Landing from './views/Landing.js?v=3.19';
+import Playground from './views/Playground.js?v=3.19';
+import Lab2D from './views/Lab2D.js?v=3.19';
+import Quiz from './views/Quiz.js?v=3.19';
+import Introduction from './views/Introduction.js?v=3.19';
 
 // --- APP SHELL: THE COMPUTATIONAL OBSERVATORY ---
 const Reset = () => {

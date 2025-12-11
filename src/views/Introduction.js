@@ -7,12 +7,18 @@ import html from '../htm.js';
 const Introduction = () => {
 
     // --- STYLES ---
-    const layoutStyle = {
+    const outerStyle = {
+        width: '100%',
+        height: '100%',
+        overflowY: 'auto',
+        background: 'var(--color-bg)'
+    };
+
+    const innerStyle = {
         padding: '24px 20px',
         maxWidth: '1000px', // Matches standard max-width
         margin: '0 auto',
-        height: '100%',
-        overflowY: 'auto'
+        minHeight: '100%'
     };
 
     const headerStyle = {
@@ -56,8 +62,9 @@ const Introduction = () => {
     };
 
     return html`
-        <div style=${layoutStyle}>
-            <div style=${{ textAlign: 'center', marginBottom: '60px' }}>
+        <div style=${outerStyle}>
+            <div style=${innerStyle}>
+                <div style=${{ textAlign: 'center', marginBottom: '60px' }}>
                 <h1 style=${headerStyle}>Welcome to Gradient Descent</h1>
                 <p style=${{ fontSize: '1.2rem', color: 'var(--color-text-dim)', lineHeight: 1.6, maxWidth: '800px', margin: '0 auto' }}>
                     An interactive guide to understanding how machines learn. 
@@ -123,7 +130,9 @@ const Introduction = () => {
                     </div>
                 <//>
             </div>
+            </div>
         </div>
+    </div>
     `;
 };
 

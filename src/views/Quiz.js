@@ -155,16 +155,22 @@ const Quiz = () => {
     };
 
     // --- CONSISTENT MERCYHURST LAYOUT ---
-    const pageStyle = {
-        padding: '24px 20px',
+    const outerStyle = {
+        width: '100%',
+        height: '100%',
+        overflowY: 'auto', // Scroll handled here
+        background: 'var(--color-bg)'
+    };
+
+    const innerStyle = {
         maxWidth: '1000px', // Matches Introduction/Lab max-width feel
         margin: '0 auto',
-        height: 'calc(100vh - 64px)', // Fix height to allow internal scroll
+        padding: '24px 20px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'flex-start', // Align top for scrolling
-        overflowY: 'auto' // ENABLE SCROLL
+        justifyContent: 'flex-start',
+        minHeight: '100%' // Ensure full height coverage
     };
 
     const cardStyle = {
@@ -173,59 +179,24 @@ const Quiz = () => {
         marginTop: '20px'
     };
 
-    const headerStyle = {
-        fontFamily: 'var(--font-serif)',
-        color: 'var(--color-primary)',
-        marginTop: 0,
-        marginBottom: '24px',
-        textAlign: 'center',
-        fontSize: '1.8rem'
-    };
-
-    const subheaderStyle = {
-        textAlign: 'center',
-        color: 'var(--color-text-dim)',
-        marginBottom: '32px',
-        fontFamily: 'var(--font-sans)',
-        fontSize: '1.1rem'
-    };
-
-    const optionStyle = (idx) => ({
-        padding: '20px',
-        margin: '12px 0',
-        borderRadius: '12px',
-        border: '2px solid',
-        borderColor: selected === null
-            ? 'var(--color-border)'
-            : (idx === questions[current].correct ? '#10b981' : (idx === selected ? '#ef4444' : 'var(--color-border)')),
-        background: selected === null
-            ? 'white'
-            : (idx === questions[current].correct ? '#ecfdf5' : (idx === selected ? '#fef2f2' : 'white')),
-        cursor: selected === null ? 'pointer' : 'default',
-        transition: 'all 0.2s ease',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        fontWeight: 500,
-        fontSize: '1.05rem',
-        color: 'var(--color-text)',
-        boxShadow: selected === null ? '0 2px 4px rgba(0,0,0,0.05)' : 'none'
-    });
+    // ... (rest of styles)
 
     if (isFinished) {
         return html`
-            <div style=${pageStyle}>
-                <${GlassCard} style=${{ ...cardStyle, maxWidth: '600px', textAlign: 'center' }}>
-                    <${Award} size=${80} color="var(--color-primary)" style=${{ marginBottom: '24px' }} />
-                    <h2 style=${headerStyle}>Assessment Complete</h2>
-                    <p style=${{ fontSize: '1.5rem', marginBottom: '16px', color: 'var(--color-secondary)', fontWeight: 'bold' }}>
-                        Score: ${score} / ${questions.length}
-                    </p>
-                    <p style=${{ color: 'var(--color-text-dim)', marginBottom: '40px', lineHeight: 1.6 }}>
-                        ${score >= 4 ? "Outstanding! You have mastered the core concepts of Gradient Descent." : "Good practice. Review the Theory sections in the Lab and try again!"}
-                    </p>
-                    <${Button} onClick=${reset} icon=${RotateCcw} size="large" style=${{ padding: '12px 32px' }}>Retake Quiz<//>
-                <//>
+            <div style=${outerStyle}>
+                <div style=${innerStyle}>
+                    <${GlassCard} style=${{ ...cardStyle, maxWidth: '600px', textAlign: 'center' }}>
+                        <${Award} size=${80} color="var(--color-primary)" style=${{ marginBottom: '24px' }} />
+                        <h2 style=${headerStyle}>Assessment Complete</h2>
+                        <p style=${{ fontSize: '1.5rem', marginBottom: '16px', color: 'var(--color-secondary)', fontWeight: 'bold' }}>
+                            Score: ${score} / ${questions.length}
+                        </p>
+                        <p style=${{ color: 'var(--color-text-dim)', marginBottom: '40px', lineHeight: 1.6 }}>
+                            ${score >= 4 ? "Outstanding! You have mastered the core concepts of Gradient Descent." : "Good practice. Review the Theory sections in the Lab and try again!"}
+                        </p>
+                        <${Button} onClick=${reset} icon=${RotateCcw} size="large" style=${{ padding: '12px 32px' }}>Retake Quiz<//>
+                    <//>
+                </div>
             </div>
         `;
     }
@@ -233,47 +204,49 @@ const Quiz = () => {
     const VisualComponent = questions[current].visual;
 
     return html`
-        <div style=${pageStyle}>
-            <!-- Progress Bar -->
-            <div style=${{ width: '100%', maxWidth: '800px', height: '6px', background: '#e2e8f0', borderRadius: '3px', marginBottom: '32px' }}>
-                <div style=${{ width: `${((current + 1) / questions.length) * 100}%`, height: '100%', background: 'var(--color-accent)', borderRadius: '3px', transition: 'width 0.3s ease' }}></div>
-            </div>
-
-            <${GlassCard} style=${{ ...cardStyle, maxWidth: '800px' }}>
-                <div style=${subheaderStyle}>Question ${current + 1} of ${questions.length}</div>
-                
-                ${VisualComponent && html`<div style=${{ marginBottom: '32px', padding: '10px', background: 'white', borderRadius: '12px', border: '1px solid var(--color-border)' }}><${VisualComponent} /></div>`}
-                
-                <h2 style=${headerStyle}>${questions[current].text}</h2>
-
-                <div style=${{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    ${questions[current].options.map((opt, idx) => html`
-                        <div 
-                            key=${idx} 
-                            style=${optionStyle(idx)}
-                            onClick=${() => handleSelect(idx)}
-                        >
-                            <span style=${{ marginRight: '10px' }}>${opt}</span>
-                            ${selected !== null && idx === questions[current].correct && html`<${CheckCircle} size=${24} color="#10b981" />`}
-                            ${selected !== null && idx === selected && idx !== questions[current].correct && html`<${XCircle} size=${24} color="#ef4444" />`}
-                        </div>
-                    `)}
+        <div style=${outerStyle}>
+            <div style=${innerStyle}>
+                <!-- Progress Bar -->
+                <div style=${{ width: '100%', maxWidth: '800px', height: '6px', background: '#e2e8f0', borderRadius: '3px', marginBottom: '32px' }}>
+                    <div style=${{ width: `${((current + 1) / questions.length) * 100}%`, height: '100%', background: 'var(--color-accent)', borderRadius: '3px', transition: 'width 0.3s ease' }}></div>
                 </div>
 
-                ${selected !== null && html`
-                    <div style=${{ marginTop: '32px', padding: '24px', borderRadius: '12px', background: '#f8fafc', borderLeft: '6px solid var(--color-accent)', animation: 'fadeIn 0.3s ease' }}>
-                        <strong style=${{ fontSize: '1.1rem', color: selected === questions[current].correct ? '#059669' : '#d97706' }}>
-                            ${selected === questions[current].correct ? "Correct!" : "Explanation:"}
-                        </strong>
-                        <p style=${{ margin: '12px 0 0 0', color: 'var(--color-text)', lineHeight: 1.6, fontSize: '1rem' }}>
-                            ${questions[current].explanation}
-                        </p>
-                        <div style=${{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
-                            <${Button} onClick=${nextQuestion} icon=${ArrowRight} variant="primary" size="large">Next<//>
-                        </div>
+                <${GlassCard} style=${{ ...cardStyle, maxWidth: '800px' }}>
+                    <div style=${subheaderStyle}>Question ${current + 1} of ${questions.length}</div>
+                    
+                    ${VisualComponent && html`<div style=${{ marginBottom: '32px', padding: '10px', background: 'white', borderRadius: '12px', border: '1px solid var(--color-border)' }}><${VisualComponent} /></div>`}
+                    
+                    <h2 style=${headerStyle}>${questions[current].text}</h2>
+
+                    <div style=${{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        ${questions[current].options.map((opt, idx) => html`
+                            <div 
+                                key=${idx} 
+                                style=${optionStyle(idx)}
+                                onClick=${() => handleSelect(idx)}
+                            >
+                                <span style=${{ marginRight: '10px' }}>${opt}</span>
+                                ${selected !== null && idx === questions[current].correct && html`<${CheckCircle} size=${24} color="#10b981" />`}
+                                ${selected !== null && idx === selected && idx !== questions[current].correct && html`<${XCircle} size=${24} color="#ef4444" />`}
+                            </div>
+                        `)}
                     </div>
-                `}
-            </${GlassCard}>
+
+                    ${selected !== null && html`
+                        <div style=${{ marginTop: '32px', padding: '24px', borderRadius: '12px', background: '#f8fafc', borderLeft: '6px solid var(--color-accent)', animation: 'fadeIn 0.3s ease' }}>
+                            <strong style=${{ fontSize: '1.1rem', color: selected === questions[current].correct ? '#059669' : '#d97706' }}>
+                                ${selected === questions[current].correct ? "Correct!" : "Explanation:"}
+                            </strong>
+                            <p style=${{ margin: '12px 0 0 0', color: 'var(--color-text)', lineHeight: 1.6, fontSize: '1rem' }}>
+                                ${questions[current].explanation}
+                            </p>
+                            <div style=${{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
+                                <${Button} onClick=${nextQuestion} icon=${ArrowRight} variant="primary" size="large">Next<//>
+                            </div>
+                        </div>
+                    `}
+                </${GlassCard}>
+            </div>
         </div>
     `;
 };
