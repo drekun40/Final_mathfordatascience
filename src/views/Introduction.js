@@ -1,7 +1,7 @@
 import React from 'react';
 import GlassCard from '../components/UI/GlassCard.js';
 import Button from '../components/UI/Button.js';
-import { ArrowRight, CheckCircle } from 'lucide-react';
+// NO EXTERNAL ICON IMPORTS to prevent crashes
 import html from '../htm.js';
 
 const Introduction = () => {
@@ -17,10 +17,10 @@ const Introduction = () => {
 
     const contentContainer = {
         width: '100%',
-        maxWidth: '900px',
+        maxWidth: '800px',
         display: 'flex',
         flexDirection: 'column',
-        gap: '24px'
+        gap: '32px'
     };
 
     const headerStyle = {
@@ -32,54 +32,86 @@ const Introduction = () => {
     };
 
     const sectionTitleStyle = {
-        fontSize: '1.5rem',
+        fontSize: '1.4rem',
         color: 'var(--color-primary)',
-        marginBottom: '16px',
-        fontFamily: 'var(--font-serif)'
+        marginBottom: '20px',
+        fontFamily: 'var(--font-serif)',
+        borderBottom: '1px solid #eee',
+        paddingBottom: '10px'
     };
 
     const listItemStyle = {
         display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        marginBottom: '16px',
+        alignItems: 'flex-start',
+        gap: '16px',
+        marginBottom: '20px',
         color: 'var(--color-text)',
-        fontSize: '1.1rem'
+        fontSize: '1.05rem',
+        lineHeight: '1.5'
+    };
+
+    const circleNumberStyle = {
+        background: 'var(--color-accent)',
+        color: 'white',
+        minWidth: '28px',
+        height: '28px',
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '0.9rem',
+        fontWeight: 'bold',
+        marginTop: '2px'
     };
 
     return html`
         <div style=${pageStyle}>
             <div style=${contentContainer}>
                 
-                <${GlassCard} style=${{ textAlign: 'center', padding: '40px 24px' }}>
+                <${GlassCard} style=${{ textAlign: 'center', padding: '40px 30px' }}>
                     <h1 style=${headerStyle}>Gradient Descent Explorer</h1>
-                    <p style=${{ fontSize: '1.2rem', color: 'var(--color-text-dim)', lineHeight: 1.6, maxWidth: '600px', margin: '0 auto' }}>
-                        An interactive environment to master the fundamental algorithm of machine learning.
+                    <p style=${{ fontSize: '1.2rem', color: 'var(--color-text-dim)', lineHeight: 1.6 }}>
+                        Welcome to the Mercyhurst Computational Observatory.
+                        <br/>
+                        Master the algorithm behind modern AI.
                     </p>
                     
                     <div style=${{ marginTop: '32px', display: 'flex', justifyContent: 'center' }}>
                          <a href="#/playground" style=${{ textDecoration: 'none' }}>
-                            <${Button} icon=${ArrowRight} variant="primary" size="large">Start Experiment<//>
+                            <${Button} variant="primary" size="large">Start Experiment →<//>
                         </a>
                     </div>
                 <//>
 
                 <${GlassCard}>
-                    <h2 style=${sectionTitleStyle}>Observatory Modules</h2>
-                    <ul style=${{ listStyle: 'none', padding: 0, margin: 0 }}>
-                        <li style=${listItemStyle}>
-                            <${CheckCircle} size=${24} color="var(--color-accent)" />
-                            <span><strong>3D Lab:</strong> Interactive visualization of the error landscape.</span>
-                        </li>
-                        <li style=${listItemStyle}>
-                            <${CheckCircle} size=${24} color="var(--color-accent)" />
-                            <span><strong>2D Studio:</strong> Precise contour map analysis.</span>
-                        </li>
-                        <li style=${listItemStyle}>
-                            <${CheckCircle} size=${24} color="var(--color-accent)" />
-                            <span><strong>Quiz Mode:</strong> Assess your understanding.</span>
-                        </li>
-                    </ul>
+                    <h2 style=${sectionTitleStyle}>How to use this tool</h2>
+                    <div style=${{ display: 'flex', flexDirection: 'column' }}>
+                        
+                        <div style=${listItemStyle}>
+                            <div style=${circleNumberStyle}>1</div>
+                            <div>
+                                <strong>3D Lab:</strong><br/>
+                                Visualize the "Error Landscape". Watch how the ball rolls down the hill to find the lowest point (Minimum Error).
+                            </div>
+                        </div>
+
+                        <div style=${listItemStyle}>
+                            <div style=${circleNumberStyle}>2</div>
+                            <div>
+                                <strong>2D Studio:</strong><br/>
+                                Fit a line to data points. Tweak the slope (m) and intercept (b) to reduce the Mean Squared Error (MSE).
+                            </div>
+                        </div>
+
+                        <div style=${listItemStyle}>
+                            <div style=${circleNumberStyle}>3</div>
+                            <div>
+                                <strong>Quiz Mode:</strong><br/>
+                                Test your knowledge on the concepts you just practiced.
+                            </div>
+                        </div>
+
+                    </div>
                 <//>
             </div>
         </div>

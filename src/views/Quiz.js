@@ -60,68 +60,63 @@ const DivergenceDiagram = () => html`
 const questions = [
     {
         id: 1,
-        text: "Which labelled point represents a 'Local Minimum'?",
-        // visual: REMOVED for simplicity
+        text: "In the 2D Studio, what two variables are we changing to fit the line?",
         options: [
-            "The highest peak on the graph",
-            "The lowest point in a local valley",
-            "Any point with a steep slope",
-            "A point where the function explodes"
+            "Slope (m) and Y-Intercept (b)",
+            "The X and Y coordinates of the data",
+            "The size of the dots",
+            "The color of the background"
         ],
-        correct: 1,
-        explanation: "Correct! A Local Minimum is the bottom of a valley where the slope is zero and surrounding points are higher."
+        correct: 0,
+        explanation: "Correct. In linear regression (y = mx + b), the model learns by adjusting 'm' (slope) and 'b' (intercept) until the line fits best."
     },
     {
         id: 2,
-        text: "Which step size represents a very High Learning Rate?",
-        visual: LearningRateDiagram, // Keeping this as it's visual-dependent
+        text: "What does 'MSE' stand for in the 2D Studio?",
         options: [
-            "Step A (The Giant Leap)",
-            "Step B (The Small Nudge)",
-            "Both are equal",
-            "Impossible to tell"
+            "Mean Squared Error",
+            "Most Significant Event",
+            "Maximum Slope Effect",
+            "Median Scale Estimation"
         ],
         correct: 0,
-        explanation: "Yes! Step A is huge. If the Learning Rate is too high, the algorithm jumps straight past the minimum."
+        explanation: "Correct. MSE (Mean Squared Error) measures the average squared difference between the estimated values and the actual value. We want this to be as low as possible."
     },
     {
         id: 3,
-        text: "What is special about a 'Saddle Point'?",
-        // visual: REMOVED
+        text: "In the 3D Lab, what happens if the 'Learning Rate' is too high?",
         options: [
-            "It is the global minimum.",
-            "It is the global maximum.",
-            "The slope is zero, but it is neither a min nor a max.",
-            "The gradient is infinite."
+            "The ball overshoots and misses the bottom",
+            "The ball moves very slowly",
+            "The ball creates a perfect straight line",
+            "Nothing happens"
         ],
-        correct: 2,
-        explanation: "Exactly. At a saddle point, the gradient is zero (flat), which can trick the algorithm into thinking it's finished."
+        correct: 0,
+        explanation: "Yes! A high Learning Rate means taking huge steps. Often, you will step right past the target (minimum) and bounce around effectively."
     },
     {
         id: 4,
-        text: "What is happening in this divergence graph?",
-        visual: DivergenceDiagram, // Keeping this as it's visual-dependent
+        text: "In the 3D Lab, what represents the 'Best Model'?",
         options: [
-            "The model is learning perfectly.",
-            "The Learning Rate is too high (Exploding).",
-            "The model has found the minimum.",
-            "The data is corrupt."
+            "The lowest point in the valley (Global Minimum)",
+            "The highest peak of the mountain",
+            "The starting position of the ball",
+            "The steepest cliff"
         ],
-        correct: 1,
-        explanation: "Correct. The path is oscillating and getting further away. This 'explosion' happens when step sizes are too large."
+        correct: 0,
+        explanation: "Exactly. In Gradient Descent, 'down' means lower error. The absolute bottom of the valley represents the lowest possible error, which is our goal."
     },
     {
         id: 5,
-        text: "In the 2D Studio Regression, what are we optimizing?",
-        // Text-only question
+        text: "Why do we use Gradient Descent?",
         options: [
-            "The slope (m) and intercept (b).",
-            "The X and Y values of data points.",
-            "The color of the line.",
-            "The graph size."
+            "To automatically find the best parameters (m & b) that minimize error",
+            "To create random data points",
+            "To make 3D graphs look cool",
+            "To increase the error of the model"
         ],
         correct: 0,
-        explanation: "Spot on. We tweak 'm' and 'b' to minimize the error between the line and the points."
+        explanation: "Correct. Gradient Descent is an optimization algorithm used to iteratively minimize the loss function (error) and train the model."
     }
 ];
 
