@@ -148,13 +148,26 @@ const Landing = () => {
                     Welcome to the Computational Observatory. This platform provides an interactive environment to explore the topology of loss functions and the mechanics of optimization algorithms.
                 </p>
 
-                <div style=${{ display: 'flex', gap: '16px' }}>
-                    <${Button} onClick=${() => setLocation('/playground')} icon=${Box}>
-                        Launch 3D Lab
-                    </${Button}>
-                    <${Button} variant="secondary" onClick=${() => setLocation('/2d')} icon=${Layers}>
-                        Open 2D Studio
-                    </${Button}>
+                <div style=${{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <!-- Row 1: Theory & Assessment -->
+                    <div style=${{ display: 'flex', gap: '16px' }}>
+                        <${Button} onClick=${() => setLocation('/intro')} icon=${ArrowRight} style=${{ flex: 1 }}>
+                            Begin Introduction
+                        </${Button}>
+                        <${Button} variant="secondary" onClick=${() => setLocation('/quiz')} icon=${Activity} style=${{ flex: 1 }}>
+                            Take Quiz
+                        </${Button}>
+                    </div>
+
+                    <!-- Row 2: Tools -->
+                    <div style=${{ display: 'flex', gap: '16px' }}>
+                        <${Button} variant="secondary" onClick=${() => setLocation('/playground')} icon=${Box} style=${{ flex: 1 }}>
+                            3D Lab
+                        </${Button}>
+                        <${Button} variant="secondary" onClick=${() => setLocation('/2d')} icon=${Layers} style=${{ flex: 1 }}>
+                            2D Studio
+                        </${Button}>
+                    </div>
                 </div>
 
                 <div style=${statsRowStyle}>
@@ -202,7 +215,7 @@ const Landing = () => {
                         Force Reload
                     </button>
                     <div style=${{ color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem' }}>
-                        System v3.29.0
+                        System v3.30.0
                     </div>
                 </div>
             </div>
