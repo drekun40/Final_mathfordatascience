@@ -202,7 +202,7 @@ const Landing = () => {
                         Force Reload
                     </button>
                     <div style=${{ color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem' }}>
-                        System v3.28.0
+                        System v3.29.0
                     </div>
                 </div>
             </div>

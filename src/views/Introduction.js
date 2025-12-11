@@ -71,9 +71,9 @@ const Introduction = () => {
                 <${GlassCard} style=${{ textAlign: 'center', padding: '40px 30px' }}>
                     <h1 style=${headerStyle}>Gradient Descent Explorer</h1>
                     <p style=${{ fontSize: '1.2rem', color: 'var(--color-text-dim)', lineHeight: 1.6 }}>
-                        Welcome to the Mercyhurst Computational Observatory.
+                        Welcome to the Mercyhurst Computational Observatory (v3.29).
                         <br/>
-                        A beginner's guide to the "Engine of AI".
+                        Master the algorithm behind modern AI.
                     </p>
                     
                     <div style=${{ marginTop: '32px', display: 'flex', justifyContent: 'center' }}>
