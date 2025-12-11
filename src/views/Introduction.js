@@ -8,8 +8,8 @@ const Introduction = () => {
 
     // --- STYLES ---
     const layoutStyle = {
-        padding: '40px',
-        maxWidth: '1000px',
+        padding: '24px 20px',
+        maxWidth: '1000px', // Matches standard max-width
         margin: '0 auto',
         height: '100%',
         overflowY: 'auto'
