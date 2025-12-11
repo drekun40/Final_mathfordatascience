@@ -19,12 +19,12 @@ const useHashLocation = () => {
     return [loc, navigate];
 };
 
-// --- Re-integrating Components with Cache Busting v=3.19 ---
-import Landing from './views/Landing.js?v=3.19';
-import Playground from './views/Playground.js?v=3.19';
-import Lab2D from './views/Lab2D.js?v=3.19';
-import Quiz from './views/Quiz.js?v=3.19';
-import Introduction from './views/Introduction.js?v=3.19';
+// --- Re-integrating Components with Cache Busting v=3.20 ---
+import Landing from './views/Landing.js?v=3.20';
+import Playground from './views/Playground.js?v=3.20';
+import Lab2D from './views/Lab2D.js?v=3.20';
+import Quiz from './views/Quiz.js?v=3.20';
+import Introduction from './views/Introduction.js?v=3.20';
 
 // --- APP SHELL: THE COMPUTATIONAL OBSERVATORY ---
 const Reset = () => {
@@ -98,15 +98,22 @@ const Reset = () => {
         };
     };
 
-    const contentStyle = {
-        flex: 1,
-        position: 'relative',
-        overflow: 'hidden' // Internal scrolling handled by views
-    };
-
     // --- MANUAL ROUTING LOGIC ---
     // We bypass wouter's Switch/Route matching to guarantee rendering
     const [loc] = useHashLocation();
+
+    // Determine if the current view should have global scrolling
+    // Intro and Quiz are "Documents" -> Scroll AUTO
+    // Playground and Lab2D are "Apps" -> Scroll HIDDEN
+    const isDocumentView = loc === '/' || loc === '/intro' || loc === '/quiz';
+
+    const contentStyle = {
+        flex: 1,
+        position: 'relative',
+        // Critical Fix: Toggle scroll based on view type
+        overflowY: isDocumentView ? 'auto' : 'hidden',
+        overflowX: 'hidden'
+    };
 
     let ActiveComponent;
     if (loc === '/' || loc === '') {

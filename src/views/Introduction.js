@@ -62,9 +62,8 @@ const Introduction = () => {
     };
 
     return html`
-        <div style=${outerStyle}>
-            <div style=${innerStyle}>
-                <div style=${{ textAlign: 'center', marginBottom: '60px' }}>
+        <div style=${pageStyle}>
+            <div style=${{ textAlign: 'center', marginBottom: '60px' }}>
                 <h1 style=${headerStyle}>Welcome to Gradient Descent</h1>
                 <p style=${{ fontSize: '1.2rem', color: 'var(--color-text-dim)', lineHeight: 1.6, maxWidth: '800px', margin: '0 auto' }}>
                     An interactive guide to understanding how machines learn. 
@@ -130,9 +129,7 @@ const Introduction = () => {
                     </div>
                 <//>
             </div>
-            </div>
         </div>
-    </div>
     `;
 };
 
