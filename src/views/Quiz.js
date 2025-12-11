@@ -159,11 +159,12 @@ const Quiz = () => {
         padding: '24px 20px',
         maxWidth: '1000px', // Matches Introduction/Lab max-width feel
         margin: '0 auto',
-        minHeight: 'calc(100vh - 64px)',
+        height: 'calc(100vh - 64px)', // Fix height to allow internal scroll
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'flex-start' // Align top for scrolling
+        justifyContent: 'flex-start', // Align top for scrolling
+        overflowY: 'auto' // ENABLE SCROLL
     };
 
     const cardStyle = {

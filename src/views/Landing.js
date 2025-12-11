@@ -195,7 +195,7 @@ const Landing = () => {
                 </div>
                 <!-- Version Indicator -->
                 <div style=${{ position: 'absolute', bottom: '10px', right: '10px', color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem' }}>
-                    System v3.17.0 | Mercyhurst University
+                    System v3.18.0 | Mercyhurst University
                 </div>
             </div>
         </div>
